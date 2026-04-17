@@ -1,0 +1,16 @@
+# Environment
+.env
+
+# Java / Maven
+backend/target/
+backend/.mvn/
+*.class
+*.jar
+*.war
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

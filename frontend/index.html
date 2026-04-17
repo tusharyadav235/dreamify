@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dreamify — Websites. Apps. Cloud.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#080808;--white:#ffffff;--gray:#888888;--light-gray:#cccccc}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;overflow-x:hidden;cursor:none}
+
+    /* CURSOR */
+    .cursor{position:fixed;width:10px;height:10px;background:white;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+    .cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(255,255,255,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease}
+
+    /* CANVAS */
+    #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;background:rgba(8,8,8,.7);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+    .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:6px}
+    .logo-dots{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-left:2px}
+    .logo-dots span{width:4px;height:4px;background:white;border-radius:50%;display:block}
+    .nav-links{display:flex;align-items:center;gap:4px;list-style:none;background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:8px 16px}
+    .nav-links li a{color:var(--white);text-decoration:none;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;border-radius:100px;transition:background .2s}
+    .nav-links li a:hover{background:rgba(255,255,255,.1)}
+    .nav-call{display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.2);color:white;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;border-radius:100px;transition:background .3s,border-color .3s}
+    .nav-call:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5)}
+    .nav-call svg{width:14px;height:14px;fill:white}
+
+    /* HERO */
+    .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 32px}
+    .hero-tagline{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--gray);margin-bottom:28px;opacity:0;animation:fadeUp 1s .4s forwards}
+    .hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(72px,12vw,180px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--white);opacity:0;animation:fadeUp 1s .6s forwards;margin-bottom:20px}
+    .hero-sub-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:40px;opacity:0;animation:fadeUp 1s .85s forwards}
+    .sub-dot{width:5px;height:5px;background:var(--gray);border-radius:50%}
+    .hero-sub-brand span{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.2em;text-transform:uppercase;color:var(--light-gray)}
+    .hero-desc{font-size:15px;color:var(--gray);max-width:460px;line-height:1.7;margin-bottom:48px;opacity:0;animation:fadeUp 1s 1s forwards}
+    .hero-buttons{display:flex;gap:16px;align-items:center;opacity:0;animation:fadeUp 1s 1.2s forwards}
+    .btn-primary{background:var(--white);color:#000;font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;letter-spacing:.06em;padding:16px 32px;border-radius:100px;border:none;cursor:none;display:flex;align-items:center;gap:10px;transition:transform .25s,background .25s;text-decoration:none}
+    .btn-primary:hover{background:#e0e0e0;transform:scale(1.05)}
+    .btn-secondary{color:var(--gray);font-size:13px;letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s}
+    .btn-secondary:hover{color:var(--white)}
+    .scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--gray);font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:0;animation:fadeUp 1s 1.8s forwards}
+    .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--gray));animation:scrollLine 2s infinite}
+    @keyframes scrollLine{0%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1;transform:scaleY(1)}100%{opacity:0;transform:scaleY(0);transform-origin:bottom}}
+
+    /* MARQUEE */
+    .marquee-wrap{overflow:hidden;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;position:relative;z-index:1}
+    .marquee-track{display:flex;gap:48px;white-space:nowrap;animation:marquee 20s linear infinite}
+    .marquee-item{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);display:flex;align-items:center;gap:48px;flex-shrink:0}
+    .marquee-dot{width:4px;height:4px;background:var(--gray);border-radius:50%}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);margin:0 48px;position:relative;z-index:1}
+    .stat-item{padding:56px 0;text-align:center;border-right:1px solid rgba(255,255,255,.07)}
+    .stat-item:last-child{border-right:none}
+    .stat-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:64px;line-height:1;letter-spacing:-.02em}
+    .stat-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-top:10px}
+
+    /* SECTION */
+    .section{position:relative;z-index:1;padding:120px 48px}
+    .section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gray);margin-bottom:60px;display:flex;align-items:center;gap:16px}
+    .section-label::before{content:'';display:block;width:32px;height:1px;background:var(--gray)}
+
+    /* SERVICE CARDS */
+    .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .service-card{border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:40px 36px 36px;transition:transform .4s cubic-bezier(.23,1,.32,1),border-color .4s,background .4s;position:relative;overflow:hidden;background:rgba(255,255,255,.02);transform-style:preserve-3d;cursor:none}
+    .service-card::before{content:'';position:absolute;top:-60px;left:-60px;width:180px;height:180px;border-radius:50%;opacity:0;transition:opacity .5s;filter:blur(48px);pointer-events:none}
+    .service-card::after{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,.5),transparent);transform:scaleX(0);transition:transform .5s cubic-bezier(.23,1,.32,1)}
+    .service-card:nth-child(1)::before{background:rgba(120,180,255,.18)}
+    .service-card:nth-child(2)::before{background:rgba(180,130,255,.18)}
+    .service-card:nth-child(3)::before{background:rgba(100,220,180,.18)}
+    .service-card:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04)}
+    .service-card:hover::before{opacity:1}
+    .service-card:hover::after{transform:scaleX(1)}
+    .sc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:36px}
+    .sc-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.25);letter-spacing:.25em;padding-top:4px}
+    .sc-icon-wrap{width:56px;height:56px;border-radius:16px;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;transition:border-color .3s,transform .4s;flex-shrink:0}
+    .sc-icon-wrap svg{width:26px;height:26px}
+    .service-card:hover .sc-icon-wrap{border-color:rgba(255,255,255,.28);transform:scale(1.08) rotate(-4deg)}
+    .sc-arrow{width:36px;height:36px;border:1px solid rgba(255,255,255,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,.3);transition:background .3s,color .3s,border-color .3s,transform .3s;margin-top:2px;flex-shrink:0}
+    .service-card:hover .sc-arrow{background:white;color:black;border-color:white;transform:rotate(45deg)}
+    .sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:32px;line-height:1;letter-spacing:.01em;text-transform:uppercase;margin-bottom:14px}
+    .sc-desc{color:rgba(255,255,255,.45);font-size:13.5px;line-height:1.8;margin-bottom:28px}
+    .sc-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+    .sc-features li{display:flex;align-items:center;gap:10px;font-size:12.5px;color:rgba(255,255,255,.55);letter-spacing:.02em}
+    .sc-features li::before{content:'';width:16px;height:16px;border:1px solid rgba(255,255,255,.15);border-radius:4px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpolyline points='1.5,5 4,7.5 8.5,2.5' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;flex-shrink:0}
+    .sc-tags{display:flex;flex-wrap:wrap;gap:8px;padding-top:24px;border-top:1px solid rgba(255,255,255,.07)}
+    .sc-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:4px 12px;transition:border-color .3s,color .3s}
+    .service-card:hover .sc-tag{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6)}
+    .service-card:nth-child(1) .sc-title{background:linear-gradient(135deg,#fff 60%,#78b4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .service-card:nth-child(2) .sc-title{background:linear-gradient(135deg,#fff 60%,#c07fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .service-card:nth-child(3) .sc-title{background:linear-gradient(135deg,#fff 60%,#64dcb4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+    /* TESTIMONIALS */
+    .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .testi-card{border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;background:rgba(255,255,255,.02);transition:background .3s,border-color .3s,transform .4s cubic-bezier(.23,1,.32,1);transform-style:preserve-3d;cursor:default}
+    .testi-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15)}
+    .testi-stars{display:flex;gap:4px;margin-bottom:20px}
+    .testi-stars span{color:#ffd700;font-size:14px}
+    .testi-quote{font-size:14px;line-height:1.8;color:rgba(255,255,255,.65);margin-bottom:28px;font-style:italic}
+    .testi-quote::before{content:'"';font-family:'Barlow Condensed',sans-serif;font-size:48px;color:rgba(255,255,255,.1);line-height:.6;display:block;margin-bottom:12px}
+    .testi-author{display:flex;align-items:center;gap:14px;border-top:1px solid rgba(255,255,255,.07);padding-top:20px}
+    .testi-avatar{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;flex-shrink:0}
+    .testi-name{font-weight:600;font-size:14px;margin-bottom:2px}
+    .testi-role{font-size:12px;color:rgba(255,255,255,.35);letter-spacing:.06em}
+
+    /* CONTACT SECTION */
+    .contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:60px;align-items:start}
+    .contact-info{}
+    .contact-info h2{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(40px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:24px}
+    .contact-info h2 span{color:rgba(255,255,255,.25)}
+    .contact-info p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:48px;max-width:340px}
+    .contact-details{display:flex;flex-direction:column;gap:20px}
+    .contact-detail-item{display:flex;align-items:center;gap:16px;padding:20px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.02);transition:background .3s,border-color .3s;text-decoration:none;color:white;cursor:none}
+    .contact-detail-item:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.18)}
+    .contact-detail-icon{width:44px;height:44px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .contact-detail-icon svg{width:18px;height:18px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    .contact-detail-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+    .contact-detail-value{font-size:14px;font-weight:500;color:rgba(255,255,255,.85)}
+
+    /* CONTACT FORM */
+    .contact-form-wrap{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:48px}
+    .form-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+    .form-subtitle{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px;line-height:1.6}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+    .form-group:last-of-type{margin-bottom:0}
+    .form-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+    .form-input,.form-select,.form-textarea{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 18px;color:white;font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color .3s,background .3s;width:100%}
+    .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.2)}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.06)}
+    .form-select{appearance:none;cursor:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+    .form-select option{background:#111;color:white}
+    .form-textarea{resize:vertical;min-height:120px;line-height:1.6}
+    .form-budget-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .budget-pill{border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:8px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);cursor:none;transition:all .2s;background:transparent}
+    .budget-pill:hover,.budget-pill.active{border-color:rgba(255,255,255,.5);color:white;background:rgba(255,255,255,.08)}
+    .form-submit-btn{width:100%;background:white;color:#000;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:18px;border:none;border-radius:12px;cursor:none;margin-top:24px;transition:background .25s,transform .25s;display:flex;align-items:center;justify-content:center;gap:12px}
+    .form-submit-btn:hover{background:#e8e8e8;transform:translateY(-2px)}
+    .form-submit-btn.loading{opacity:.7;pointer-events:none}
+    .form-success{display:none;text-align:center;padding:48px 24px}
+    .form-success-icon{width:64px;height:64px;background:rgba(100,220,180,.12);border:1px solid rgba(100,220,180,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px}
+    .form-success h3{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;text-transform:uppercase;margin-bottom:12px}
+    .form-success p{color:rgba(255,255,255,.4);font-size:14px;line-height:1.7}
+
+    /* PRE-FOOTER */
+    .pre-footer{position:relative;z-index:1;text-align:center;padding:140px 48px 0;overflow:hidden}
+    .pf-title{font-family:'Barlow',sans-serif;font-weight:700;font-size:clamp(48px,7vw,96px);line-height:1.05;letter-spacing:-.03em;margin-bottom:20px}
+    .pf-sub{color:rgba(255,255,255,.4);font-size:14px;letter-spacing:.02em;margin-bottom:40px}
+    .pf-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.3);color:white;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;padding:14px 32px;border-radius:100px;transition:background .3s,border-color .3s;margin-bottom:72px;cursor:none}
+    .pf-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.6)}
+    .pf-shape{position:relative;width:280px;height:220px;margin:0 auto;pointer-events:none}
+    .blob-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+    .blob-1{position:absolute;width:200px;height:160px;background:white;border-radius:46% 54% 62% 38% / 52% 48% 52% 48%;transform:rotate(-20deg) translateY(-10px);opacity:.92;animation:blobMorph1 6s ease-in-out infinite}
+    .blob-2{position:absolute;width:160px;height:130px;background:rgba(255,255,255,.25);border-radius:62% 38% 46% 54% / 40% 60% 40% 60%;transform:rotate(30deg) translate(40px,30px);animation:blobMorph2 7s ease-in-out infinite}
+    .blob-shadow{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:160px;height:20px;background:radial-gradient(ellipse,rgba(255,255,255,.15) 0%,transparent 70%);filter:blur(8px)}
+    @keyframes blobMorph1{0%,100%{border-radius:46% 54% 62% 38% / 52% 48% 52% 48%;transform:rotate(-20deg) translateY(-10px)}33%{border-radius:60% 40% 30% 70% / 50% 60% 40% 50%;transform:rotate(-10deg) translateY(-20px)}66%{border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;transform:rotate(-30deg) translateY(-5px)}}
+    @keyframes blobMorph2{0%,100%{border-radius:62% 38% 46% 54% / 40% 60% 40% 60%;transform:rotate(30deg) translate(40px,30px)}50%{border-radius:40% 60% 60% 40% / 60% 40% 60% 40%;transform:rotate(20deg) translate(50px,20px)}}
+
+    /* SOCIAL ROW */
+    .footer-social{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+    .social-item{display:flex;align-items:center;justify-content:space-between;padding:22px 32px;border-right:1px solid rgba(255,255,255,.08);text-decoration:none;color:white;transition:background .3s;cursor:none}
+    .social-item:last-child{border-right:none}
+    .social-item:hover{background:rgba(255,255,255,.04)}
+    .social-name{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500}
+    .social-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .social-icon svg{width:16px;height:16px;fill:white}
+    .social-arrow{font-size:16px;color:rgba(255,255,255,.4);transition:transform .3s,color .3s}
+    .social-item:hover .social-arrow{transform:translateX(4px);color:white}
+
+    /* FOOTER COLUMNS */
+    .footer-links-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(255,255,255,.08)}
+    .footer-col{padding:48px 32px;border-right:1px solid rgba(255,255,255,.08)}
+    .footer-col:last-child{border-right:none}
+    .footer-col-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:22px}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .footer-col ul a{text-decoration:none;color:rgba(255,255,255,.75);font-size:14px;transition:color .2s;cursor:none}
+    .footer-col ul a:hover{color:white}
+
+    /* FOOTER BOTTOM */
+    .footer-bottom{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:48px;padding:56px 48px 48px}
+    .fb-logo{display:flex;align-items:center;gap:12px;margin-bottom:20px;text-decoration:none}
+    .fb-logo-icon{width:36px;height:36px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .fb-logo-icon svg{width:20px;height:20px}
+    .fb-logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:.1em;color:white;text-transform:uppercase}
+    .fb-desc{font-size:13px;color:rgba(255,255,255,.35);line-height:1.75;max-width:280px}
+    .fb-right{display:flex;flex-direction:column;gap:12px;justify-self:end;width:100%;max-width:420px}
+    .fb-sub-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+    .fb-sub-row{display:flex;border:1px solid rgba(255,255,255,.15);border-radius:8px;overflow:hidden}
+    .fb-sub-input{flex:1;background:transparent;border:none;outline:none;color:white;font-family:'Barlow',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:16px 20px}
+    .fb-sub-input::placeholder{color:rgba(255,255,255,.25)}
+    .fb-sub-btn{background:white;color:black;border:none;padding:0 28px;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:none;transition:background .2s;flex-shrink:0}
+    .fb-sub-btn:hover{background:#e0e0e0}
+    .footer-base{position:relative;z-index:1;display:flex;justify-content:center;align-items:center;padding:20px 48px;border-top:1px solid rgba(255,255,255,.06);gap:8px}
+    .footer-base-line{width:80px;height:1px;background:rgba(255,255,255,.12)}
+    .footer-base-copy{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.1em;text-align:center}
+
+    /* COOKIE BANNER */
+    .cookie-banner{position:fixed;bottom:28px;left:28px;z-index:500;background:rgba(18,18,18,.96);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:24px 28px;max-width:380px;display:none}
+    .cookie-banner.show{display:block;animation:fadeUp .5s forwards}
+    .cookie-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+    .cookie-text{font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:20px}
+    .cookie-text a{color:rgba(255,255,255,.75);cursor:none}
+    .cookie-btns{display:flex;gap:10px}
+    .cookie-accept{flex:1;background:white;color:black;border:none;border-radius:100px;padding:11px 20px;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:background .2s}
+    .cookie-accept:hover{background:#e0e0e0}
+    .cookie-decline{flex:1;background:transparent;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:11px 20px;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:border-color .2s,color .2s}
+    .cookie-decline:hover{border-color:rgba(255,255,255,.4);color:white}
+
+    /* MODALS */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:600;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .3s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal-box{background:#0e0e0e;border:1px solid rgba(255,255,255,.1);border-radius:24px;width:100%;max-width:640px;max-height:80vh;overflow-y:auto;padding:48px;transform:translateY(20px);transition:transform .3s;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+    .modal-overlay.open .modal-box{transform:translateY(0)}
+    .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}
+    .modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:32px;letter-spacing:.02em;text-transform:uppercase}
+    .modal-close{width:36px;height:36px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:transparent;color:rgba(255,255,255,.5);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:none;transition:border-color .2s,color .2s;flex-shrink:0}
+    .modal-close:hover{border-color:white;color:white}
+    .modal-date{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:32px}
+    .modal-section{margin-bottom:28px}
+    .modal-section h3{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;color:rgba(255,255,255,.9)}
+    .modal-section p{font-size:13.5px;color:rgba(255,255,255,.45);line-height:1.8}
+    .modal-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:24px 0}
+
+    /* ANIMATIONS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    /* TOAST */
+    .toast{position:fixed;top:28px;right:28px;z-index:700;background:#0e0e0e;border:1px solid rgba(100,220,180,.3);border-radius:12px;padding:16px 24px;font-size:13px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:12px;transform:translateX(120%);transition:transform .4s cubic-bezier(.23,1,.32,1)}
+    .toast.show{transform:translateX(0)}
+    .toast-dot{width:8px;height:8px;background:#64dcb4;border-radius:50%;flex-shrink:0}
+
+    @media(max-width:768px){
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .stats-row{grid-template-columns:1fr 1fr;margin:0 20px}
+      .section{padding:60px 20px}
+      .services-grid,.testimonials-grid{grid-template-columns:1fr}
+      .contact-grid{grid-template-columns:1fr;gap:40px}
+      .form-row{grid-template-columns:1fr}
+      .footer-social,.footer-links-grid{grid-template-columns:1fr 1fr}
+      .footer-bottom{grid-template-columns:1fr}
+      .fb-right{max-width:100%;justify-self:start}
+      .pre-footer{padding:60px 20px 0}
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">Dreamify<div class="logo-dots"><span></span><span></span><span></span><span></span></div></a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="tel:+917451947631" class="nav-call">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6 6l1.16-1.16a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 15.92z"/></svg>
+      Call Us
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <p class="hero-tagline">Websites · Apps · Cloud Solutions</p>
+    <h1 class="hero-title">Digital<br>Revolution</h1>
+    <div class="hero-sub-brand">
+      <div class="sub-dot"></div>
+      <span>Dreamify</span>
+      <div class="sub-dot"></div>
+    </div>
+    <p class="hero-desc">We craft high-performance websites, scalable apps, and powerful cloud solutions that transform your business into a digital powerhouse.</p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn-primary">Start Your Project <span>↗</span></a>
+      <a href="#services" class="btn-secondary">Explore Services →</a>
+    </div>
+    <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">Web Development <span class="marquee-dot"></span> Mobile Apps <span class="marquee-dot"></span> Cloud Solutions <span class="marquee-dot"></span> UI/UX Design <span class="marquee-dot"></span> DevOps <span class="marquee-dot"></span> API Integration <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Web Development <span class="marquee-dot"></span> Mobile Apps <span class="marquee-dot"></span> Cloud Solutions <span class="marquee-dot"></span> UI/UX Design <span class="marquee-dot"></span> DevOps <span class="marquee-dot"></span> API Integration <span class="marquee-dot"></span></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Projects Delivered</div></div>
+    <div class="stat-item"><div class="stat-num">98%</div><div class="stat-label">Client Satisfaction</div></div>
+    <div class="stat-item"><div class="stat-num">3x</div><div class="stat-label">Faster Delivery</div></div>
+    <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label">Cloud Uptime</div></div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="section-label">What We Build</div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="sc-header">
+          <div class="sc-icon-wrap"><svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="10.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/><ellipse cx="13" cy="13" rx="4.5" ry="10.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/><line x1="2.5" y1="13" x2="23.5" y2="13" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/><line x1="4" y1="8" x2="22" y2="8" stroke="rgba(255,255,255,0.3)" stroke-width="1"/><line x1="4" y1="18" x2="22" y2="18" stroke="rgba(255,255,255,0.3)" stroke-width="1"/></svg></div>
+          <div class="sc-arrow">↗</div>
+        </div>
+        <div class="sc-num">01 — Web</div>
+        <div class="sc-title">Web Dev</div>
+        <div class="sc-desc">Blazing-fast, conversion-optimized websites. From landing pages to complex portals — pixel-perfect on every screen.</div>
+        <ul class="sc-features"><li>Custom design systems & UI kits</li><li>React, Next.js & headless CMS</li><li>Core Web Vitals & SEO optimized</li><li>E-commerce & payment integration</li></ul>
+        <div class="sc-tags"><span class="sc-tag">React</span><span class="sc-tag">Next.js</span><span class="sc-tag">TypeScript</span><span class="sc-tag">Tailwind</span></div>
+      </div>
+      <div class="service-card">
+        <div class="sc-header">
+          <div class="sc-icon-wrap"><svg viewBox="0 0 26 26" fill="none"><rect x="7" y="2" width="12" height="22" rx="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/><line x1="10" y1="6" x2="16" y2="6" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="20.5" r="1" fill="rgba(255,255,255,0.5)"/><rect x="10" y="9.5" width="6" height="4.5" rx="1" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/></svg></div>
+          <div class="sc-arrow">↗</div>
+        </div>
+        <div class="sc-num">02 — Mobile</div>
+        <div class="sc-title">Mobile Apps</div>
+        <div class="sc-desc">Native and cross-platform apps for iOS & Android. We turn your idea into a seamless experience that scales with your growth.</div>
+        <ul class="sc-features"><li>iOS & Android native development</li><li>React Native & Flutter builds</li><li>Offline-first architecture</li><li>App Store submission & support</li></ul>
+        <div class="sc-tags"><span class="sc-tag">Flutter</span><span class="sc-tag">React Native</span><span class="sc-tag">Swift</span><span class="sc-tag">Kotlin</span></div>
+      </div>
+      <div class="service-card">
+        <div class="sc-header">
+          <div class="sc-icon-wrap"><svg viewBox="0 0 26 26" fill="none"><path d="M6.5 18.5a4.5 4.5 0 0 1 0-9h.5a6 6 0 0 1 11.6-1A4 4 0 0 1 19.5 18.5Z" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" stroke-linejoin="round"/><line x1="10" y1="22" x2="10" y2="18.5" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-linecap="round"/><line x1="13" y1="22" x2="13" y2="18.5" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-linecap="round"/><line x1="16" y1="22" x2="16" y2="18.5" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-linecap="round"/></svg></div>
+          <div class="sc-arrow">↗</div>
+        </div>
+        <div class="sc-num">03 — Cloud</div>
+        <div class="sc-title">Cloud Infra</div>
+        <div class="sc-desc">Scalable infrastructure on AWS, GCP & Azure. CI/CD pipelines, serverless architecture, and 99.9% uptime SLAs.</div>
+        <ul class="sc-features"><li>Multi-cloud architecture & DevOps</li><li>Kubernetes & container orchestration</li><li>CI/CD pipeline automation</li><li>Security, monitoring & auto-scaling</li></ul>
+        <div class="sc-tags"><span class="sc-tag">AWS</span><span class="sc-tag">GCP</span><span class="sc-tag">Docker</span><span class="sc-tag">Terraform</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="testimonials">
+    <div class="section-label">Client Reviews</div>
+    <div class="testimonials-grid" id="testimonials-grid">
+      <!-- Loaded from API -->
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="section-label">Get In Touch</div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2>Let's Build<br><span>Something</span><br>Great</h2>
+        <p>Tell us about your project and we'll get back to you within 24 hours with a tailored proposal.</p>
+        <div class="contact-details">
+          <a href="tel:+917451947631" class="contact-detail-item">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6 6l1.16-1.16a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 15.92z"/></svg></div>
+            <div><div class="contact-detail-label">Direct Call</div><div class="contact-detail-value">+91 7451947631</div></div>
+          </a>
+          <a href="mailto:hellodreamify.info@gmail.com" class="contact-detail-item">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div><div class="contact-detail-label">Email Us</div><div class="contact-detail-value">hellodreamify.info@gmail.com</div></div>
+          </a>
+          <div class="contact-detail-item" style="cursor:default">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="contact-detail-label">Office</div><div class="contact-detail-value">Meerut, Uttar Pradesh, India</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form-wrap">
+        <div id="form-view">
+          <div class="form-title">Project Brief</div>
+          <p class="form-subtitle">Fill in your details and we'll craft a custom solution for you.</p>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="f-first" type="text" placeholder="Rahul"/></div>
+            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="f-last" type="text" placeholder="Sharma"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="f-email" type="email" placeholder="rahul@company.com"/></div>
+            <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" id="f-phone" type="tel" placeholder="+91 98765 43210"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Company / Startup Name</label><input class="form-input" id="f-company" type="text" placeholder="Your Company Name"/></div>
+          <div class="form-group">
+            <label class="form-label">Service Needed</label>
+            <select class="form-select form-input" id="f-service">
+              <option value="">Select a service...</option>
+              <option>Web Development</option>
+              <option>Mobile App (iOS/Android)</option>
+              <option>Cloud Infrastructure</option>
+              <option>UI/UX Design</option>
+              <option>Full Stack Solution</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Budget</label>
+            <div class="form-budget-pills">
+              <button class="budget-pill" onclick="selectBudget(this,'Under ₹50K')">Under ₹50K</button>
+              <button class="budget-pill" onclick="selectBudget(this,'₹50K–₹2L')">₹50K–₹2L</button>
+              <button class="budget-pill" onclick="selectBudget(this,'₹2L–₹5L')">₹2L–₹5L</button>
+              <button class="budget-pill" onclick="selectBudget(this,'₹5L+')">₹5L+</button>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Project Description</label><textarea class="form-textarea" id="f-desc" placeholder="Tell us about your project goals, timeline, and any specific requirements..."></textarea></div>
+          <button class="form-submit-btn" id="submitBtn" onclick="submitForm()">Send Project Brief <span>→</span></button>
+        </div>
+        <div class="form-success" id="form-success">
+          <div class="form-success-icon">✓</div>
+          <h3>Message Sent!</h3>
+          <p>Thanks for reaching out. Our team will review your project brief and get back to you within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRE-FOOTER -->
+  <div class="pre-footer">
+    <p style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:28px">Start Today</p>
+    <h2 class="pf-title">Built for What<br>Comes Next.</h2>
+    <p class="pf-sub">Future-ready websites, apps & cloud solutions for teams moving at the speed of innovation.</p>
+    <a href="#contact" class="pf-btn">Get Started →</a>
+    <div class="pf-shape"><div class="blob-wrap"><div class="blob-2"></div><div class="blob-1"></div><div class="blob-shadow"></div></div></div>
+  </div>
+
+  <!-- SOCIAL ROW -->
+  <div class="footer-social">
+    <a href="#" class="social-item"><span class="social-name"><span class="social-icon"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></span>Twitter</span><span class="social-arrow">→</span></a>
+    <a href="#" class="social-item"><span class="social-name"><span class="social-icon"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#080808"/></svg></span>YouTube</span><span class="social-arrow">→</span></a>
+    <a href="#" class="social-item"><span class="social-name"><span class="social-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="white" stroke-width="2"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="white" stroke-width="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></span>Instagram</span><span class="social-arrow">→</span></a>
+    <a href="#" class="social-item"><span class="social-name"><span class="social-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Facebook</span><span class="social-arrow">→</span></a>
+  </div>
+
+  <!-- FOOTER LINKS -->
+  <div class="footer-links-grid">
+    <div class="footer-col"><div class="footer-col-label">Services</div><ul><li><a href="#services">Web Development</a></li><li><a href="#services">Mobile Apps</a></li><li><a href="#services">Cloud Solutions</a></li><li><a href="#contact">Free Demo</a></li></ul></div>
+    <div class="footer-col"><div class="footer-col-label">Resources</div><ul><li><a href="#">Documentation</a></li><li><a href="#">API Reference</a></li><li><a href="#">Case Studies</a></li><li><a href="#">Blog</a></li></ul></div>
+    <div class="footer-col"><div class="footer-col-label">Company</div><ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press Kit</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div class="footer-col"><div class="footer-col-label">Legal</div><ul><li><a href="#" onclick="openModal('privacy');return false">Privacy Policy</a></li><li><a href="#" onclick="openModal('cookie');return false">Cookie Policy</a></li><li><a href="#" onclick="openModal('terms');return false">Terms of Use</a></li><li><a href="#" onclick="openModal('imprint');return false">Imprint</a></li></ul></div>
+  </div>
+
+  <!-- FOOTER BOTTOM -->
+  <div class="footer-bottom">
+    <div class="fb-left">
+      <a href="#" class="fb-logo"><div class="fb-logo-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M4 16L10 4L16 16" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 11L13.5 11" stroke="black" stroke-width="2" stroke-linecap="round"/></svg></div><span class="fb-logo-text">Dreamify.</span></a>
+      <p class="fb-desc">In the new era of digital business, we build the future with certainty — crafting exceptional websites, apps, and cloud infrastructure your company deserves.</p>
+    </div>
+    <div class="fb-right">
+      <p class="fb-sub-label">Stay in the loop</p>
+      <div class="fb-sub-row"><input class="fb-sub-input" type="email" placeholder="name@email.com"/><button class="fb-sub-btn">Subscribe</button></div>
+      <p style="font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.05em">By subscribing you agree to our <a href="#" onclick="openModal('privacy');return false" style="color:rgba(255,255,255,.35);cursor:none">Privacy Policy</a>.</p>
+    </div>
+  </div>
+  <div class="footer-base"><div class="footer-base-line"></div><p class="footer-base-copy">© 2025 Dreamify. All rights reserved. Meerut, UP, India</p><div class="footer-base-line"></div></div>
+
+  <!-- COOKIE BANNER -->
+  <div class="cookie-banner show" id="cookieBanner">
+    <div class="cookie-title">🍪 Cookie Preferences</div>
+    <p class="cookie-text">We use cookies to enhance your experience. Read our <a href="#" onclick="openModal('cookie');return false">Cookie Policy</a> and <a href="#" onclick="openModal('privacy');return false">Privacy Policy</a>.</p>
+    <div class="cookie-btns">
+      <button class="cookie-accept" onclick="document.getElementById('cookieBanner').style.display='none'">Accept All</button>
+      <button class="cookie-decline" onclick="document.getElementById('cookieBanner').style.display='none'">Decline</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg">Message sent!</span></div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modal-privacy"><div class="modal-box"><div class="modal-header"><div class="modal-title">Privacy Policy</div><button class="modal-close" onclick="closeModal('privacy')">✕</button></div><p class="modal-date">Last updated: April 2025</p><div class="modal-section"><h3>1. Information We Collect</h3><p>We collect information you provide directly — name, email, phone, and project details — as well as usage data automatically gathered when you visit our website.</p></div><hr class="modal-divider"/><div class="modal-section"><h3>2. How We Use Your Data</h3><p>Your data is used to respond to project enquiries, improve our services, and send updates with your consent.</p></div><hr class="modal-divider"/><div class="modal-section"><h3>3. Data Sharing</h3><p>We do not sell your data. We may share it with service providers under strict confidentiality agreements, or when required by law.</p></div><hr class="modal-divider"/><div class="modal-section"><h3>4. Contact</h3><p>Email hellodreamify.info@gmail.com for privacy enquiries.</p></div></div></div>
+  <div class="modal-overlay" id="modal-cookie"><div class="modal-box"><div class="modal-header"><div class="modal-title">Cookie Policy</div><button class="modal-close" onclick="closeModal('cookie')">✕</button></div><p class="modal-date">Last updated: April 2025</p><div class="modal-section"><h3>What Are Cookies?</h3><p>Cookies are small files placed on your device to remember preferences and analyse usage.</p></div><hr class="modal-divider"/><div class="modal-section"><h3>Essential Cookies</h3><p>Required for core functionality. Cannot be disabled.</p></div><hr class="modal-divider"/><div class="modal-section"><h3>Analytics Cookies</h3><p>Help us understand visitor behaviour to improve the site. You can opt out at any time.</p></div></div></div>
+  <div class="modal-overlay" id="modal-terms"><div class="modal-box"><div class="modal-header"><div class="modal-title">Terms of Use</div><button class="modal-close" onclick="closeModal('terms')">✕</button></div><p class="modal-date">Last updated: April 2025</p><div class="modal-section"><h3>Acceptance</h3><p>By using Dreamify's website or services you agree to these terms.</p></div><hr class="modal-divider"/><div class="modal-section"><h3>Intellectual Property</h3><p>Upon full payment, clients own their deliverables. Dreamify retains portfolio rights unless otherwise agreed.</p></div></div></div>
+  <div class="modal-overlay" id="modal-imprint"><div class="modal-box"><div class="modal-header"><div class="modal-title">Imprint</div><button class="modal-close" onclick="closeModal('imprint')">✕</button></div><div class="modal-section"><h3>Company</h3><p>Dreamify Technologies<br>Meerut, Uttar Pradesh, India</p></div><hr class="modal-divider"/><div class="modal-section"><h3>Contact</h3><p>Email: hellodreamify.info@gmail.com<br>Phone: +91 7451947631</p></div></div></div>
+
+  <script>
+    const API = '/api';
+
+    // CURSOR
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+    function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}animRing();
+    document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cursor.style.width='18px';cursor.style.height='18px';ring.style.width='52px';ring.style.height='52px'});el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px'})});
+
+    // PARTICLES
+    const canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d');
+    let W,H,particles=[],pmouse={x:-9999,y:-9999};
+    function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+    resize();window.addEventListener('resize',()=>{resize();initParticles()});
+    document.addEventListener('mousemove',e=>{pmouse.x=e.clientX;pmouse.y=e.clientY});
+    class Particle{constructor(){this.reset()}reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.size=Math.random()*1.8+.4;this.alpha=Math.random()*.5+.1;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.wave=Math.random()*Math.PI*2;this.waveSpeed=.008+Math.random()*.012;this.waveAmp=.4+Math.random()*.8}update(){this.wave+=this.waveSpeed;this.x+=this.vx+Math.sin(this.wave)*this.waveAmp*.3;this.y+=this.vy+Math.cos(this.wave*.7)*this.waveAmp*.2;const dx=this.x-pmouse.x,dy=this.y-pmouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){const f=(100-d)/100;this.x+=dx/d*f*2.5;this.y+=dy/d*f*2.5}if(this.x<-10)this.x=W+10;if(this.x>W+10)this.x=-10;if(this.y<-10)this.y=H+10;if(this.y>H+10)this.y=-10}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${this.alpha})`;ctx.fill()}}
+    function initParticles(){const n=Math.floor(W*H/5000);particles=Array.from({length:n},()=>new Particle());for(let i=0;i<200;i++){const p=new Particle(),a=Math.random()*Math.PI,r=Math.random()*W*.35;p.x=W*.5+Math.cos(a)*r;p.y=H*.3+Math.sin(a)*r*.25;p.alpha=Math.random()*.35+.05;p.size=Math.random()*1.4+.3;particles.push(p)}}
+    initParticles();
+    function animParticles(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw()});requestAnimationFrame(animParticles)}animParticles();
+
+    // 3D TILT
+    document.querySelectorAll('.service-card').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(800px) rotateY(${x*10}deg) rotateX(${-y*10}deg) scale(1.02)`});c.addEventListener('mouseleave',()=>{c.style.transform=''})});
+    document.querySelectorAll('.social-item,.footer-col,.testi-card').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(600px) rotateY(${x*6}deg) rotateX(${-y*6}deg)`;c.style.transition='transform .05s'});c.addEventListener('mouseleave',()=>{c.style.transform='';c.style.transition='transform .4s'})});
+
+    // SCROLL REVEAL
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform=e.target.classList.contains('service-card')?'':'translateY(0)'}}),{threshold:.1});
+    document.querySelectorAll('.service-card,.stat-item,.testi-card,.contact-detail-item').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(32px)';el.style.transition='opacity .7s ease,transform .7s ease';obs.observe(el)});
+
+    // MODALS
+    function openModal(id){document.getElementById('modal-'+id).classList.add('open');document.body.style.overflow='hidden'}
+    function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');document.body.style.overflow=''}
+    document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('open');document.body.style.overflow=''}}));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow=''})});
+
+    // BUDGET PILLS
+    let selectedBudget='';
+    function selectBudget(el,val){document.querySelectorAll('.budget-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');selectedBudget=val}
+
+    // TOAST
+    function showToast(msg,ok=true){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.style.borderColor=ok?'rgba(100,220,180,.3)':'rgba(255,100,100,.3)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
+
+    // SUBMIT FORM
+    async function submitForm(){
+      const first=document.getElementById('f-first').value.trim();
+      const last=document.getElementById('f-last').value.trim();
+      const email=document.getElementById('f-email').value.trim();
+      const phone=document.getElementById('f-phone').value.trim();
+      const company=document.getElementById('f-company').value.trim();
+      const service=document.getElementById('f-service').value;
+      const desc=document.getElementById('f-desc').value.trim();
+      if(!first||!email||!service){showToast('Please fill required fields',false);return}
+      const btn=document.getElementById('submitBtn');
+      btn.classList.add('loading');btn.textContent='Sending...';
+      try{
+        const res=await fetch(API+'/enquiries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firstName:first,lastName:last,email,phone,company,service,budget:selectedBudget,description:desc})});
+        if(res.ok){document.getElementById('form-view').style.display='none';document.getElementById('form-success').style.display='block';showToast('Project brief sent!')}
+        else{showToast('Server error. Please try again.',false)}
+      }catch(err){showToast('Could not connect to server.',false)}
+      finally{btn.classList.remove('loading');btn.innerHTML='Send Project Brief <span>→</span>'}
+    }
+
+    // LOAD TESTIMONIALS
+    async function loadTestimonials(){
+      const grid=document.getElementById('testimonials-grid');
+      try{
+        const res=await fetch(API+'/testimonials');
+        const data=await res.json();
+        if(!data.length){grid.innerHTML='<p style="color:rgba(255,255,255,.3);font-size:14px;grid-column:1/-1">No reviews yet.</p>';return}
+        grid.innerHTML=data.map(t=>`
+          <div class="testi-card">
+            <div class="testi-stars">${'<span>★</span>'.repeat(t.rating||5)}</div>
+            <div class="testi-quote">${t.content}</div>
+            <div class="testi-author">
+              <div class="testi-avatar">${t.clientName.charAt(0).toUpperCase()}</div>
+              <div><div class="testi-name">${t.clientName}</div><div class="testi-role">${t.clientRole||''}</div></div>
+            </div>
+          </div>`).join('');
+        document.querySelectorAll('.testi-card').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(32px)';el.style.transition='opacity .7s ease,transform .7s ease';obs.observe(el)});
+      }catch(e){
+        // Fallback static testimonials if API is down
+        grid.innerHTML=[{n:'Amit Singh',r:'CEO, TechStart Delhi',s:5,q:'Dreamify built our entire platform in 6 weeks. The quality and attention to detail was outstanding — far beyond what we expected.'},{n:'Priya Nair',r:'Founder, StyleBox',s:5,q:'Our React Native app has 4.9 stars on the Play Store. The Dreamify team nailed our vision perfectly.'},{n:'Rohit Mehta',r:'CTO, LogiPrime',s:5,q:'Their AWS architecture cut our server costs by 40% while tripling performance. Highly recommended for cloud work.'}].map(t=>`<div class="testi-card"><div class="testi-stars">${'<span>★</span>'.repeat(t.s)}</div><div class="testi-quote">${t.q}</div><div class="testi-author"><div class="testi-avatar">${t.n.charAt(0)}</div><div><div class="testi-name">${t.n}</div><div class="testi-role">${t.r}</div></div></div></div>`).join('');
+      }
+    }
+    loadTestimonials();
+  </script>
+</body>
+</html>
