@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════
-#  DREAMIFY — ADMIN PANEL CI/CD PIPELINE (GHCR + EC2)
+#  DREAMIFY — ADMIN PANEL CI/CD PIPELINE (V2.2 - GHCR + EC2)
 # ═══════════════════════════════════════════════════════════════════
 
 name: Admin Panel CI/CD
@@ -7,6 +7,7 @@ name: Admin Panel CI/CD
 on:
   push:
     branches: [main]
+    # Triggers only when changes are made to the admin folder or this workflow
     paths:
       - "admin-panel/**"
       - ".github/workflows/admin.yml"
@@ -14,10 +15,11 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # IMAGE_NAME must match your docker-compose.yml image field
+  # Ensure this matches the image name in your docker-compose.yml
   IMAGE_NAME: tusharyadav235/dreamify-admin
 
 jobs:
+  # 🐳 JOB 1: BUILD & PUSH
   build:
     name: 🐳 Build & Push Image
     runs-on: ubuntu-latest
@@ -51,11 +53,14 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: admin-panel
+          # Points to the Dockerfile inside your admin-panel folder
+          file: admin-panel/Dockerfile 
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # 🚀 JOB 2: DEPLOY
   deploy:
     name: 🚀 Deploy to EC2
     runs-on: ubuntu-latest
@@ -74,7 +79,7 @@ jobs:
             set -e
             cd ~/dreamify
             
-            echo "🌿 1. Syncing docker-compose and configs..."
+            echo "🌿 1. Forcing Git Sync to match GitHub Main..."
             git fetch --all
             git reset --hard origin/main
             
@@ -84,12 +89,12 @@ jobs:
             echo "🐳 3. Pulling fresh Admin image from GHCR..."
             docker compose pull admin
             
-            echo "🚀 4. Recreating Admin container..."
-            # --no-deps ensures only the admin container restarts
-            # --force-recreate ensures it uses the new image layers
+            echo "🚀 4. Hard-recreating Admin container..."
+            # --no-deps prevents restarting the DB/Backend
+            # --force-recreate bypasses Docker's cache to use the new image layers
             docker compose up -d --no-deps --force-recreate admin
             
-            echo "🧹 5. Cleaning up old image layers..."
+            echo "🧹 5. Pruning old images to save EC2 disk space..."
             docker image prune -f
             
             echo "🎉 [SUCCESS] Admin Panel is updated and LIVE!"
