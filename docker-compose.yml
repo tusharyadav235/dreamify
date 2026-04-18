@@ -55,7 +55,7 @@ services:
           memory: 450M
 
   frontend:
-    image: tusharyadaav/dreamify-frontend:latest
+    image: tusharyad235/dreamify-frontend:latest
     container_name: dreamify-frontend
     restart: unless-stopped
     networks:
@@ -66,7 +66,7 @@ services:
           memory: 64M
 
   admin:
-    image: tusharyadaav/dreamify-admin:latest
+    image: tusharyad235/dreamify-admin:latest
     container_name: dreamify-admin
     restart: unless-stopped
     networks:
