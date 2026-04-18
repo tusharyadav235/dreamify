@@ -19,7 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io
   # Replace with your lowercase username if 'github.repository_owner' has caps
-  IMAGE_NAME: tusharyadaav/dreamify-backend
+  IMAGE_NAME: tusharyadav235/dreamify-backend
 
 jobs:
   # ─────────────────────────────────────────────────────────────
