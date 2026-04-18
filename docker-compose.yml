@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+  # 🗄️ Database: MySQL 8.0
   mysql:
     image: mysql:8.0
     container_name: dreamify-mysql
@@ -18,7 +19,7 @@ services:
     networks:
       - dreamify-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$${MYSQL_ROOT_PASSWORD}"]
       timeout: 5s
       retries: 10
     deploy:
@@ -26,8 +27,8 @@ services:
         limits:
           memory: 350M
 
+  # ☕ Backend: Spring Boot (Java 17)
   backend:
-    # Updated to your registry name
     image: ghcr.io/tusharyadav235/dreamify-backend:latest
     container_name: dreamify-backend
     restart: unless-stopped
@@ -37,6 +38,7 @@ services:
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
+      # Memory management is key for 1GB RAM EC2
       JAVA_OPTS: "-Xmx300m -Xms200m"
     networks:
       - dreamify-net
@@ -54,8 +56,8 @@ services:
         limits:
           memory: 450M
 
+  # 🌐 Main Frontend
   frontend:
-    # Updated to GHCR
     image: ghcr.io/tusharyadav235/dreamify-frontend:latest
     container_name: dreamify-frontend
     restart: unless-stopped
@@ -66,12 +68,12 @@ services:
         limits:
           memory: 64M
 
+  # 🛠️ Admin Panel
   admin:
-    # CRITICAL: Pointing to GHCR image
     image: ghcr.io/tusharyadav235/dreamify-admin:latest
     container_name: dreamify-admin
     restart: unless-stopped
-    # NOTE: No volumes here. We use the fresh code inside the image.
+    # ❌ VOLUME REMOVED: This forces Docker to use the fresh GHCR image code
     networks:
       - dreamify-net
     deploy:
@@ -79,6 +81,7 @@ services:
         limits:
           memory: 64M
 
+  # 🛡️ Reverse Proxy: Nginx + SSL
   nginx:
     image: nginx:alpine
     container_name: dreamify-nginx
