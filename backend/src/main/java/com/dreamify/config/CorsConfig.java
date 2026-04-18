@@ -8,17 +8,19 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Changed from /api/** to /** to cover all endpoints
+        registry.addMapping("/**")
+                // allowedOriginPatterns is REQUIRED when allowCredentials is true
                 .allowedOriginPatterns(
                     "https://dreamify.info", 
                     "https://www.dreamify.info",
-                    "https://*.dreamify.info", // Allows any subdomains
-                    "http://localhost:[*]",      // Useful for local testing
-                    "http://52.4.161.1"        
+                    "https://*.dreamify.info",
+                    "http://localhost:[*]",
+                    "http://52.4.161.1"
                 )
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true) 
+                .exposedHeaders("Authorization") // Optional: useful if you use JWTs later
+                .allowCredentials(true)
                 .maxAge(3600);
     }
 }
