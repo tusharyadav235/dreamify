@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════
-#  DREAMIFY — MASTER DEPLOY PIPELINE (V2.0 - Production Ready)
+#  DREAMIFY — MASTER DEPLOY PIPELINE (V2.1 - Production Optimized)
 # ═══════════════════════════════════════════════════════════════════
 
 name: Full Stack Deploy
@@ -7,11 +7,9 @@ name: Full Stack Deploy
 on:
   push:
     branches: [main]
+    # Trigger on ANY file change so admin-panel updates are captured
     paths:
-      - "docker-compose.yml"
-      - "init.sql"
-      - "nginx.conf"
-      - ".github/workflows/**"
+      - "**"
   workflow_dispatch:
     inputs:
       service:
@@ -20,10 +18,6 @@ on:
         default: "all"
         type: choice
         options: [all, backend, frontend, admin, mysql, nginx]
-      force_rebuild:
-        description: "Force pull/recreate?"
-        default: false
-        type: boolean
 
 jobs:
   validate:
@@ -34,7 +28,6 @@ jobs:
         uses: actions/checkout@v4
       - name: 🔍 Validate docker-compose
         run: |
-          # Create a dummy .env for validation purposes
           touch .env
           docker compose config --quiet && echo "✅ docker-compose.yml is valid"
 
@@ -57,53 +50,53 @@ jobs:
             set -e
             cd ~/dreamify
             
-            echo "📥 Pulling latest code from Git..."
-            git pull origin main
+            echo "📥 Syncing EC2 with GitHub Main..."
+            git fetch --all
+            git reset --hard origin/main
 
             # ── SECRET INJECTION ──
-            # Re-creating the .env file from GitHub Secrets to ensure consistency
             echo "🔐 Syncing environment variables..."
             echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" > .env
             echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
             echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
             echo "APP_DOMAIN=${{ secrets.APP_DOMAIN }}" >> .env
-            echo "✅ .env file successfully updated."
+            echo "✅ .env successfully updated."
 
             # Container Registry Login
+            echo "🔑 Logging into GHCR..."
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u tusharyadav235 --password-stdin
 
             SERVICE="${{ github.event.inputs.service || 'all' }}"
             
             if [ "$SERVICE" = "all" ]; then
-              echo "🔄 Cleaning up and redeploying full stack..."
+              echo "🔄 Full Stack Reset: Cleaning up and redeploying..."
               docker compose down
               docker compose pull
-              docker compose up -d --remove-orphans --force-recreate
+              docker compose up -d --remove-orphans
             else
-              echo "🔄 Redeploying specific service: $SERVICE"
+              echo "🔄 Targeted Redeploy: $SERVICE"
               docker compose pull $SERVICE
+              # stop/rm ensures the old version is wiped before 'up' starts the new one
               docker compose stop $SERVICE
               docker compose rm -f $SERVICE
-              docker compose up -d --no-deps $SERVICE
+              docker compose up -d --no-deps --force-recreate $SERVICE
             fi
 
-            # Cleanup dangling images to keep t2.micro disk healthy
-            echo "🧹 Cleaning up old Docker images..."
+            # Cleanup to save t2.micro disk space
+            echo "🧹 Cleaning up old Docker layers..."
             docker image prune -f
 
-      - name: 🩺 Smoke Test (HTTPS)
+      - name: 🩺 Smoke Test
         run: |
           echo "Waiting for services to stabilize (15s)..."
           sleep 15
           
-          # We check the status of your domain
+          # Check site status
           STATUS=$(curl -s -L -o /dev/null -w "%{http_code}" https://dreamify.info)
           
           if [ "$STATUS" = "200" ]; then
             echo "✅ SUCCESS: Dreamify.info is LIVE (HTTP 200)"
-          elif [ "$STATUS" = "301" ] || [ "$STATUS" = "302" ]; then
-            echo "⚠️ WARNING: Site returned a redirect ($STATUS). Check Nginx config."
           else
             echo "❌ ERROR: Dreamify.info returned HTTP $STATUS"
             exit 1
