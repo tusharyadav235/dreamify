@@ -71,20 +71,15 @@ jobs:
             
             if [ "$SERVICE" = "all" ]; then
               echo "🔄 Full Stack Reset: Cleaning up and redeploying..."
-              docker compose down
+              docker compose down --remove-orphans
               docker compose pull
-              docker compose up -d --remove-orphans
+              docker compose up -d 
             else
               echo "🔄 Targeted Redeploy: $SERVICE"
               docker compose pull $SERVICE
-              # stop/rm ensures the old version is wiped before 'up' starts the new one
-              docker compose stop $SERVICE
-              docker compose rm -f $SERVICE
               docker compose up -d --no-deps --force-recreate $SERVICE
             fi
-
-            # Cleanup to save t2.micro disk space
-            echo "🧹 Cleaning up old Docker layers..."
+            
             docker image prune -f
 
       - name: 🩺 Smoke Test
