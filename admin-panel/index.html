@@ -13,104 +13,92 @@
     body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;display:flex;overflow-x:hidden}
 
     /* ── LOGIN ── */
-    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%;background:var(--bg);position:fixed;inset:0;z-index:900;transition:opacity .5s;padding:20px}
-    .login-wrap.hidden{opacity:0;pointer-events:none}
-    .login-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;width:100%;max-width:420px}
-    .login-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-    .login-sub{font-size:12px;color:var(--gray);letter-spacing:.1em;margin-bottom:32px}
-    .login-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px;display:block}
-    .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:white;font-family:'Barlow',sans-serif;font-size:16px;outline:none;margin-bottom:16px;transition:border-color .3s}
-    .login-btn{width:100%;background:white;color:black;border:none;border-radius:10px;padding:16px;font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-top:8px}
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%;background:var(--bg);position:fixed;inset:0;z-index:2000;padding:20px; transition: opacity 0.4s;}
+    .login-wrap.hidden{opacity:0; pointer-events:none;}
+    .login-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;width:100%;max-width:420px;text-align:center}
+    .login-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:32px}
+    .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:16px;color:white;font-size:16px;outline:none;margin-bottom:16px}
+    .login-btn{width:100%;background:white;color:black;border:none;border-radius:12px;padding:16px;font-weight:700;text-transform:uppercase;cursor:pointer}
 
     /* ── LAYOUT ── */
-    .layout{display:flex;width:100%;min-height:100vh}
-    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:19}
-    .sidebar-overlay.show{display:block}
+    .layout{display:flex;width:100%;min-height:100vh;position:relative}
 
     /* ── SIDEBAR ── */
-    .sidebar{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:100vh;flex-shrink:0;position:fixed;left:0;top:0;bottom:0;z-index:20;transition:transform .3s cubic-bezier(.23,1,.32,1)}
-    .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-    .sidebar-logo-icon{width:32px;height:32px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center}
-    .sidebar-logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.1em;text-transform:uppercase}
-    .sidebar-nav{padding:16px 12px;flex:1;overflow-y:auto}
-    .nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;color:rgba(255,255,255,.5);font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:2px;border:none;background:transparent;width:100%;text-align:left}
-    .nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.5}
+    .sidebar{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:1000;transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1)}
+    .sidebar-logo{padding:28px 24px;border-bottom:1px solid var(--border);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;text-transform:uppercase;letter-spacing:1px}
+    .sidebar-nav{padding:20px 12px;flex:1}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;color:rgba(255,255,255,.5);font-size:14px;cursor:pointer;border:none;background:transparent;width:100%;transition:0.2s; text-align: left;}
     .nav-item.active{background:rgba(255,255,255,.1);color:white}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:900}
 
-    /* ── MAIN ── */
-    .main{flex:1;margin-left:var(--sw);display:flex;flex-direction:column;min-height:100vh;min-width:0; transition: margin-left .3s ease}
-    .topbar{padding:0 24px;height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
-    .hamburger{display:none;background:transparent;border:none;color:white;cursor:pointer;padding:8px}
+    /* ── MAIN CONTENT ── */
+    .main{flex:1;margin-left:var(--sw);display:flex;flex-direction:column;min-height:100vh;transition:margin-left .3s ease}
+    .topbar{padding:0 24px;height:65px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.9);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10}
+    .hamburger{display:none;background:transparent;border:none;color:white;font-size:24px;cursor:pointer;padding:10px}
 
-    /* ── CONTENT ── */
-    .content{padding:28px 28px 100px;flex:1}
+    .content{padding:30px 30px 120px;flex:1;max-width:1400px;margin:0 auto;width:100%}
 
     /* ── PAGES ── */
     .page{display:none}
     .page.active{display:block}
 
-    /* ── STAT CARDS ── */
-    .stats-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
-    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 18px}
-    .stat-card-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:36px}
+    /* ── STATS ── */
+    .stats-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:30px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:25px 20px}
+    .stat-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+    .stat-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px}
 
-    /* ── TABLES & LISTS ── */
-    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    /* ── TABLES (Desktop Only) ── */
+    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden}
     .desk-table{width:100%;border-collapse:collapse}
-    .desk-table th{padding:12px 22px;text-align:left;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);border-bottom:1px solid var(--border)}
-    .desk-table td{padding:16px 22px;font-size:13px;color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.04)}
+    .desk-table th{padding:15px 25px;text-align:left;font-size:10px;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border)}
+    .desk-table td{padding:18px 25px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.03)}
 
-    /* ── MOBILE LISTS ── */
+    /* ── MOBILE LISTS (Phone Only) ── */
     .mob-list{display:none;flex-direction:column;gap:12px}
-    .mob-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px; transition: transform 0.2s}
-    .mob-card:active{transform: scale(0.98); background: var(--surface2)}
-    .mob-card-name{font-size:16px;font-weight:600;margin-bottom:4px}
-    .mob-card-sub{font-size:12px;color:var(--gray);margin-bottom:12px}
-    .mob-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .mob-field{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px}
-    .mob-field-lbl{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:2px}
+    .mob-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px}
+    .mob-card:active{background:var(--surface2)}
+    .mob-name{font-weight:700;font-size:16px;margin-bottom:4px}
+    .mob-sub{font-size:12px;color:var(--gray);margin-bottom:12px}
+    .mob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mob-field{background:rgba(255,255,255,.03);padding:10px;border-radius:10px}
+    .field-lbl{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:2px}
 
     /* ── BADGES ── */
-    .badge{display:inline-flex;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+    .badge{display:inline-flex;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:600; text-transform: uppercase;}
     .badge-new{background:rgba(100,180,255,.1);color:#78b4ff}
     .badge-contacted{background:rgba(255,200,100,.1);color:#ffc864}
     .badge-completed{background:rgba(100,220,180,.1);color:#64dcb4}
 
-    /* ── ACTION BUTTONS ── */
-    .action-btn{background:transparent;border:1px solid var(--border);border-radius:8px;color:rgba(255,255,255,.6);padding:8px 14px;cursor:pointer;font-family:'Barlow',sans-serif; min-height: 40px}
+    /* ── BOTTOM NAV (Mobile) ── */
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.98);border-top:1px solid var(--border);backdrop-filter:blur(20px);z-index:500;padding-bottom:env(safe-area-inset-bottom, 15px)}
+    .bnav-inner{display:flex;justify-content:space-around;padding:10px 0}
+    .bnav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,.3);font-size:10px;background:transparent;border:none; cursor: pointer;}
+    .bnav-btn.active{color:white}
 
-    /* ── BOTTOM SHEET (Mobile Modal) ── */
-    .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+    /* ── MODALS ── */
+    .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:1100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
     .detail-overlay.open{opacity:1;pointer-events:all}
     .detail-box{background:#0e0e0e;border:1px solid rgba(255,255,255,.1);border-radius:24px 24px 0 0;width:100%;max-width:640px;padding:12px 28px 40px;transform:translateY(100%);transition:transform .4s cubic-bezier(0.16, 1, 0.3, 1);max-height:90vh;overflow-y:auto}
     .detail-overlay.open .detail-box{transform:translateY(0)}
     .pull-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 20px}
 
-    /* ── BOTTOM NAV ── */
-    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,15,.95);border-top:1px solid var(--border);backdrop-filter:blur(20px);z-index:50;padding-bottom:env(safe-area-inset-bottom, 15px)}
-    .bnav-inner{display:flex;justify-content:space-around;align-items:center;padding:10px 0}
-    .bnav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,.35);font-size:10px;text-transform:uppercase;background:transparent;border:none;cursor:pointer}
-    .bnav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
-    .bnav-btn.active{color:white}
-
     /* ── TOAST ── */
-    .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:1100;background:#111;border:1px solid rgba(100,220,180,.3);padding:12px 24px;border-radius:12px;opacity:0;transition:all .3s;pointer-events:none}
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
+    .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:1200;background:#111;border:1px solid #64dcb4;padding:12px 24px;border-radius:12px;opacity:0;transition:0.3s;pointer-events:none; color: white; font-size: 14px;}
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-10px);}
 
-    /* ── RESPONSIVE OVERRIDES ── */
-    @media(max-width:768px){
-      .sidebar{transform:translateX(-100%); width: 80% !important; z-index: 1001}
-      .sidebar.open{transform:translateX(0)}
-      .main{margin-left:0}
+    /* ── MOBILE BREAKPOINTS ── */
+    @media (max-width: 768px) {
+      .sidebar{transform: translateX(-100%); width: 280px !important}
+      .sidebar.open{transform: translateX(0)}
+      .sidebar-overlay.show{display:block}
+      .main{margin-left:0 !important; width:100% !important}
       .hamburger{display:block}
       .content{padding:20px 16px 120px}
-      .stats-cards{grid-template-columns:1fr 1fr; gap: 10px}
-      .stat-card-num{font-size:28px}
-      .desk-table{display:none}
-      .mob-list{display:flex}
+      .stats-cards{grid-template-columns: 1fr 1fr}
+      .desk-table{display:none !important}
+      .mob-list{display:flex !important}
       .bottom-nav{display:block}
-      .table-header{flex-direction: column; align-items: flex-start; gap: 15px}
-      .search-input{width: 100% !important}
     }
   </style>
 </head>
@@ -118,14 +106,10 @@
 
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
-    <div class="login-logo">Dreamify.</div>
-    <div class="login-sub">Admin Panel — Restricted Access</div>
-    <p style="color:#ff6b6b; font-size:12px; margin-bottom:15px; display:none" id="loginError">Invalid credentials.</p>
-    <label class="login-label">Username</label>
-    <input class="login-input" id="loginUser" type="text" placeholder="admin"/>
-    <label class="login-label">Password</label>
-    <input class="login-input" id="loginPass" type="password" placeholder="••••••••"/>
-    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-logo">Dreamify Admin</div>
+    <input class="login-input" id="loginUser" type="text" placeholder="Username"/>
+    <input class="login-input" id="loginPass" type="password" placeholder="Password"/>
+    <button class="login-btn" onclick="doLogin()">Login</button>
   </div>
 </div>
 
@@ -133,59 +117,43 @@
   <div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
 
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M4 16L10 4L16 16" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <span class="sidebar-logo-text">Dreamify</span>
-    </div>
+    <div class="sidebar-logo">Dreamify</div>
     <nav class="sidebar-nav">
-      <button class="nav-item active" onclick="go('dashboard',this)">Dashboard</button>
-      <button class="nav-item" onclick="go('enquiries',this)">Enquiries <span id="sb-badge"></span></button>
-      <button class="nav-item" onclick="go('testimonials',this)">Testimonials</button>
+      <button class="nav-item active" onclick="go('dashboard',this)">🏠 Dashboard</button>
+      <button class="nav-item" onclick="go('enquiries',this)">✉️ Enquiries</button>
+      <button class="nav-item" onclick="go('testimonials',this)">⭐ Reviews</button>
     </nav>
-    <button class="nav-item" style="margin: 20px 12px; color: #ff6b6b" onclick="doLogout()">Logout</button>
   </aside>
 
   <main class="main">
     <div class="topbar">
-      <div style="display:flex; align-items:center; gap:12px">
-        <button class="hamburger" onclick="toggleSidebar()">☰</button>
-        <div style="font-family:'Barlow Condensed'; font-weight:800; font-size:20px" id="pageTitle">Dashboard</div>
-      </div>
-      <div class="stat-card-label">Admin Portal</div>
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div id="pageTitle" style="font-family:'Barlow Condensed'; font-weight:800; font-size:22px">DASHBOARD</div>
+      <div style="width:32px; height:32px; background:#222; border-radius:50%"></div>
     </div>
 
     <div class="content">
       <div class="page active" id="page-dashboard">
         <div class="stats-cards">
-          <div class="stat-card"><div class="stat-card-label">Total</div><div class="stat-card-num" id="d-total">—</div></div>
-          <div class="stat-card"><div class="stat-card-label">New</div><div class="stat-card-num" id="d-new" style="color:#78b4ff">—</div></div>
-          <div class="stat-card"><div class="stat-card-label">Reviews</div><div class="stat-card-num" id="d-testi">—</div></div>
-          <div class="stat-card"><div class="stat-card-label">Active</div><div class="stat-card-num">100%</div></div>
+          <div class="stat-card"><div class="stat-label">Total Leads</div><div class="stat-num" id="d-total">0</div></div>
+          <div class="stat-card"><div class="stat-label">New</div><div class="stat-num" id="d-new" style="color:#78b4ff">0</div></div>
+          <div class="stat-card"><div class="stat-label">Reviews</div><div class="stat-num" id="d-testi">0</div></div>
+          <div class="stat-card"><div class="stat-label">Rating</div><div class="stat-num">5.0</div></div>
         </div>
-        <div class="table-wrap">
-          <div style="padding:20px; border-bottom:1px solid var(--border); font-weight:700">RECENT LEADS</div>
-          <div class="mob-list" id="dash-mob" style="padding:10px"></div>
-          <table class="desk-table"><tbody id="dash-desk"></tbody></table>
-        </div>
+        <div class="mob-list" id="dash-mob"></div>
+        <div class="table-wrap"><table class="desk-table"><tbody id="dash-desk"></tbody></table></div>
       </div>
 
       <div class="page" id="page-enquiries">
-        <div class="table-header" style="display:flex; justify-content:space-between; margin-bottom:20px">
-           <input class="login-input search-input" style="margin-bottom:0; max-width:300px" id="enq-search" placeholder="Search..." oninput="filterEnq()"/>
-           <select class="action-btn" id="enq-filter" onchange="filterEnq()">
-             <option value="">All Status</option>
-             <option value="NEW">New</option>
-             <option value="CONTACTED">Contacted</option>
-           </select>
-        </div>
         <div class="mob-list" id="enq-mob"></div>
-        <table class="desk-table"><tbody id="enq-desk"></tbody></table>
+        <div class="table-wrap"><table class="desk-table"><tbody id="enq-desk"></tbody></table></div>
       </div>
 
       <div class="page" id="page-testimonials">
         <div class="stat-card" style="margin-bottom:20px">
           <input class="login-input" id="t-name" placeholder="Client Name"/>
-          <textarea class="login-input" id="t-content" placeholder="Content" style="min-height:80px"></textarea>
+          <input class="login-input" id="t-role" placeholder="Role (CEO, etc)"/>
+          <textarea class="login-input" id="t-content" placeholder="Content" style="min-height:100px"></textarea>
           <button class="login-btn" onclick="addTesti()">Add Testimonial</button>
         </div>
         <div id="testi-mob" class="mob-list"></div>
@@ -195,9 +163,9 @@
 
   <nav class="bottom-nav">
     <div class="bnav-inner">
-      <button class="bnav-btn active" id="bn-dashboard" onclick="go('dashboard',this,'bn')">🏠<span>Home</span></button>
-      <button class="bnav-btn" id="bn-enquiries" onclick="go('enquiries',this,'bn')">📩<span>Leads</span></button>
-      <button class="bnav-btn" id="bn-testimonials" onclick="go('testimonials',this,'bn')">⭐<span>Reviews</span></button>
+      <button class="bnav-btn active" id="bn-dashboard" onclick="go('dashboard',this)">🏠<span>Home</span></button>
+      <button class="bnav-btn" id="bn-enquiries" onclick="go('enquiries',this)">✉️<span>Leads</span></button>
+      <button class="bnav-btn" id="bn-testimonials" onclick="go('testimonials',this)">⭐<span>Reviews</span></button>
     </div>
   </nav>
 </div>
@@ -205,17 +173,21 @@
 <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
   <div class="detail-box">
     <div class="pull-handle"></div>
-    <div id="d-name" style="font-size:24px; font-weight:800; margin-bottom:20px">Name</div>
-    <div class="mob-card-grid" id="detail-data" style="margin-bottom:20px">
-      </div>
-    <div id="d-desc" class="mob-field" style="margin-bottom:20px; line-height:1.6; color:var(--gray)">Description</div>
+    <div id="det-name" style="font-size:24px; font-weight:800; margin-bottom:20px">Name</div>
+    <div class="mob-grid" style="margin-bottom:20px">
+      <div class="mob-field"><div class="field-lbl">Email</div><div id="det-email"></div></div>
+      <div class="mob-field"><div class="field-lbl">Phone</div><div id="det-phone"></div></div>
+      <div class="mob-field"><div class="field-lbl">Service</div><div id="det-service"></div></div>
+      <div class="mob-field"><div class="field-lbl">Budget</div><div id="det-budget"></div></div>
+    </div>
+    <div id="det-desc" class="mob-field" style="margin-bottom:20px; line-height:1.6; color:var(--gray)"></div>
     <div style="display:flex; gap:10px">
-      <select class="action-btn" id="d-status-sel" style="flex:1" onchange="updateStatus()">
+      <select class="login-input" id="det-status-sel" style="flex:1; margin-bottom:0" onchange="updateStatus()">
         <option value="NEW">New</option>
         <option value="CONTACTED">Contacted</option>
         <option value="COMPLETED">Completed</option>
       </select>
-      <a id="d-call-link" href="#" class="login-btn" style="flex:1; text-decoration:none; text-align:center; margin-top:0">Call Now</a>
+      <button class="login-btn" style="flex:1" onclick="deleteEnquiry()">Delete Lead</button>
     </div>
   </div>
 </div>
@@ -232,21 +204,7 @@ function doLogin() {
   if(u==='admin' && p==='dreamify2025') {
     document.getElementById('loginWrap').classList.add('hidden');
     loadAll();
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-  }
-}
-
-function doLogout() { location.reload(); }
-
-function go(id, el) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item, .bnav-btn').forEach(n=>n.classList.remove('active'));
-  
-  if(el) el.classList.add('active');
-  document.getElementById('pageTitle').textContent = id.toUpperCase();
-  closeSidebar();
+  } else { alert('Invalid Login'); }
 }
 
 function toggleSidebar() { 
@@ -258,59 +216,120 @@ function closeSidebar() {
   document.getElementById('sbOverlay').classList.remove('show');
 }
 
+function go(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item, .bnav-btn').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const bn = document.getElementById('bn-'+id);
+  if(bn) bn.classList.add('active');
+  document.getElementById('pageTitle').textContent = id.toUpperCase();
+  closeSidebar();
+}
+
 async function loadAll() {
   try {
     const [er, tr] = await Promise.all([fetch(API+'/enquiries'), fetch(API+'/testimonials')]);
     enqs = await er.json();
     testis = await tr.json();
     render();
-  } catch(e) { toast('Error loading data'); }
+  } catch(e) { toast('Server Error'); }
 }
 
 function render() {
-  const nw = enqs.filter(e=>e.status==='NEW').length;
+  // Stats
   document.getElementById('d-total').textContent = enqs.length;
-  document.getElementById('d-new').textContent = nw;
+  document.getElementById('d-new').textContent = enqs.filter(e=>e.status==='NEW').length;
   document.getElementById('d-testi').textContent = testis.length;
-  
-  const list = enqs.slice(0, 5).map(e => `
+
+  // Enquiries
+  const enqHtml = enqs.map(e => `
     <div class="mob-card" onclick="openDetail(${e.id})">
-      <div class="mob-card-name">${e.firstName}</div>
-      <span class="badge ${stbadge(e.status)}">${e.status}</span>
-    </div>
-  `).join('');
-  document.getElementById('dash-mob').innerHTML = list;
-  
-  const fullList = enqs.map(e => `
-    <div class="mob-card" onclick="openDetail(${e.id})">
-      <div class="mob-card-name">${e.firstName} ${e.lastName||''}</div>
-      <div class="mob-card-sub">${e.email}</div>
-      <div class="mob-card-grid">
-        <div class="mob-field"><div class="mob-field-lbl">Service</div>${e.service}</div>
-        <div class="mob-field"><div class="mob-field-lbl">Budget</div>${e.budget}</div>
+      <div class="mob-name">${e.firstName} ${e.lastName||''}</div>
+      <div class="mob-sub">${e.email}</div>
+      <div class="mob-grid">
+        <div class="mob-field"><div class="field-lbl">Service</div>${e.service||'—'}</div>
+        <div class="mob-field"><div class="field-lbl">Status</div><span class="badge ${stb(e.status)}">${e.status}</span></div>
       </div>
     </div>
   `).join('');
-  document.getElementById('enq-mob').innerHTML = fullList;
+  document.getElementById('dash-mob').innerHTML = enqHtml;
+  document.getElementById('enq-mob').innerHTML = enqHtml;
+
+  // Testimonials
+  const testiHtml = testis.map(t => `
+    <div class="mob-card">
+      <div class="mob-name">${t.clientName}</div>
+      <div class="mob-sub">${t.clientRole||'Client'}</div>
+      <div style="font-size:13px; color:var(--gray); margin-bottom:12px">"${t.content}"</div>
+      <button class="login-btn" style="padding:8px; font-size:10px" onclick="deleteTesti(${t.id})">Remove</button>
+    </div>
+  `).join('');
+  document.getElementById('testi-mob').innerHTML = testiHtml;
 }
 
 function openDetail(id) {
   const x = enqs.find(e=>e.id===id);
   curId = id;
-  document.getElementById('d-name').textContent = x.firstName;
-  document.getElementById('d-desc').textContent = x.description || 'No notes.';
-  document.getElementById('d-call-link').href = 'tel:' + x.phone;
+  document.getElementById('det-name').textContent = x.firstName + ' ' + (x.lastName||'');
+  document.getElementById('det-email').textContent = x.email;
+  document.getElementById('det-phone').textContent = x.phone || '—';
+  document.getElementById('det-service').textContent = x.service || '—';
+  document.getElementById('det-budget').textContent = x.budget || '—';
+  document.getElementById('det-desc').textContent = x.description || 'No notes.';
+  document.getElementById('det-status-sel').value = x.status;
   document.getElementById('detailOverlay').classList.add('open');
 }
 
 function closeDetail() { document.getElementById('detailOverlay').classList.remove('open'); }
 
-function stbadge(s){ return s==='CONTACTED' ? 'badge-contacted' : (s==='COMPLETED' ? 'badge-completed' : 'badge-new'); }
+async function updateStatus() {
+  const s = document.getElementById('det-status-sel').value;
+  await fetch(`${API}/enquiries/${curId}/status`, {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({status: s})
+  });
+  toast('Status Updated');
+  loadAll();
+}
+
+async function deleteEnquiry() {
+  if(!confirm('Delete this lead?')) return;
+  await fetch(`${API}/enquiries/${curId}`, {method: 'DELETE'});
+  closeDetail();
+  toast('Lead Deleted');
+  loadAll();
+}
+
+async function addTesti() {
+  const name = document.getElementById('t-name').value;
+  const content = document.getElementById('t-content').value;
+  const role = document.getElementById('t-role').value;
+  if(!name || !content) return alert('Name and content required');
+  
+  await fetch(API+'/testimonials', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({clientName: name, content, clientRole: role, rating: 5})
+  });
+  toast('Review Added');
+  loadAll();
+}
+
+async function deleteTesti(id) {
+  if(!confirm('Remove this review?')) return;
+  await fetch(`${API}/testimonials/${id}`, {method: 'DELETE'});
+  toast('Removed');
+  loadAll();
+}
+
+function stb(s){ return s==='CONTACTED' ? 'badge-contacted' : (s==='COMPLETED' ? 'badge-completed' : 'badge-new'); }
 
 function toast(m) {
   const t = document.getElementById('toast');
   t.textContent = m; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2000);
+  setTimeout(()=>t.classList.remove('show'), 3000);
 }
 </script>
 </body>
