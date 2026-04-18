@@ -24,11 +24,11 @@ services:
     deploy:
       resources:
         limits:
-          memory: 350M # Slightly lowered to give more room to Java
+          memory: 350M
 
   backend:
-    # Points to your Docker Hub registry instead of local build
-    image: tusharyadav235/dreamify-backend:latest
+    # Updated to your registry name
+    image: ghcr.io/tusharyadav235/dreamify-backend:latest
     container_name: dreamify-backend
     restart: unless-stopped
     environment:
@@ -55,7 +55,8 @@ services:
           memory: 450M
 
   frontend:
-    image: tusharyad235/dreamify-frontend:latest
+    # Updated to GHCR
+    image: ghcr.io/tusharyadav235/dreamify-frontend:latest
     container_name: dreamify-frontend
     restart: unless-stopped
     networks:
@@ -66,9 +67,11 @@ services:
           memory: 64M
 
   admin:
-    image: tusharyad235/dreamify-admin:latest
+    # CRITICAL: Pointing to GHCR image
+    image: ghcr.io/tusharyadav235/dreamify-admin:latest
     container_name: dreamify-admin
     restart: unless-stopped
+    # NOTE: No volumes here. We use the fresh code inside the image.
     networks:
       - dreamify-net
     deploy:
