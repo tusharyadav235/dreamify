@@ -56,7 +56,7 @@ jobs:
           DB_NAME: dreamify_test
           DB_USER: test_user
           DB_PASSWORD: testpass
-        run: mvn test --batch-mode
+        run: mvn clean test --batch-mode
 
   # 🐳 JOB 2: BUILD & PUSH
   build:
@@ -95,8 +95,11 @@ jobs:
           context: backend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # ── FORCE REBUILD ──
+          no-cache: true
+          # ❌ Remove or comment out these two lines for this specific build:
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
   # 🚀 JOB 3: DEPLOY
   deploy:
