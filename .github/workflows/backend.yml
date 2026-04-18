@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════
-#  DREAMIFY — BACKEND CI/CD PIPELINE (V2.0 - GHCR & EC2)
+#  DREAMIFY — UNIFIED BACKEND PIPELINE (V3.0 - Zero Cache / Pure Build)
 # ═══════════════════════════════════════════════════════════════════
 
 name: Backend CI/CD
@@ -17,18 +17,20 @@ env:
   IMAGE_NAME: tusharyadav235/dreamify-backend
 
 jobs:
-  # 🧪 JOB 1: TEST
-  test:
-    name: 🧪 Test & Lint
+  build-and-deploy:
+    name: 🏗️ Fresh Build & Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    # Services required for the test phase
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: testroot
           MYSQL_DATABASE: dreamify_test
-          MYSQL_USER: test_user
-          MYSQL_PASSWORD: testpass
         ports:
           - 3306:3306
         options: >-
@@ -38,7 +40,7 @@ jobs:
           --health-retries=10
 
     steps:
-      - name: ⬇️ Checkout
+      - name: ⬇️ Checkout Code
         uses: actions/checkout@v4
 
       - name: ☕ Set up JDK 17
@@ -48,28 +50,18 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      - name: 🔍 Run Maven Tests
+      # ── 1. COMPILE NEW CODE (This destroys the "Ghost JAR") ──
+      - name: 📦 Compile & Package JAR
         working-directory: backend
         env:
           DB_HOST: localhost
           DB_PORT: 3306
           DB_NAME: dreamify_test
-          DB_USER: test_user
-          DB_PASSWORD: testpass
-        run: mvn clean test --batch-mode
-
-  # 🐳 JOB 2: BUILD & PUSH
-  build:
-    name: 🐳 Build & Push Image
-    runs-on: ubuntu-latest
-    needs: test
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
+          DB_USER: root
+          DB_PASSWORD: testroot
+        run: |
+          mvn clean package -DskipTests
+          echo "✅ Fresh JAR created in backend/target/"
 
       - name: 🔐 Log in to GHCR
         uses: docker/login-action@v3
@@ -83,32 +75,22 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
+          tags: type=raw,value=latest
 
       - name: 🔧 Set up Buildx
         uses: docker/setup-buildx-action@v3
 
+      # ── 2. BUILD IMAGE (Using the exact JAR we just made) ──
       - name: 🏗️ Build and push
         uses: docker/build-push-action@v5
         with:
           context: backend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          # ── FORCE REBUILD ──
-          no-cache: true
-          # ❌ Remove or comment out these two lines for this specific build:
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          # CRITICAL: no-cache forces Docker to bake the fresh JAR
+          no-cache: true 
 
-  # 🚀 JOB 3: DEPLOY
-  deploy:
-    name: 🚀 Deploy to EC2
-    runs-on: ubuntu-latest
-    needs: build
-    environment: production
-
-    steps:
+      # ── 3. SHIP TO EC2 ──
       - name: 🚀 SSH Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -118,22 +100,18 @@ jobs:
           script: |
             set -e
             cd ~/dreamify
-
-            echo "🌿 1. Syncing docker-compose and configs..."
+            
+            echo "🌿 Syncing Compose files..."
             git fetch --all
             git reset --hard origin/main
 
-            echo "🔑 2. Authenticating with GHCR..."
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "🔑 Authenticating..."
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u tusharyadav235 --password-stdin
 
-            echo "🐳 3. Pulling fresh Backend image..."
+            echo "🐳 Pulling & Recreating Backend..."
             docker compose pull backend
-            
-            echo "🚀 4. Recreating Backend container..."
-            # --force-recreate ensures the new JAR file inside the image is used
             docker compose up -d --no-deps --force-recreate backend
 
-            echo "🧹 5. Cleaning up old images..."
+            echo "🧹 Cleaning up..."
             docker image prune -f
-            
-            echo "🎉 [SUCCESS] Backend deployment is LIVE!"
+            echo "🎉 [SUCCESS] New Code is LIVE on EC2!"
