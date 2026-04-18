@@ -1,24 +1,20 @@
 # ═══════════════════════════════════════════════════════════════════
-#  DREAMIFY — ADMIN PANEL CI/CD PIPELINE
-#  Optimized for GHCR + EC2 Deployment
+#  DREAMIFY — ADMIN PANEL CI/CD PIPELINE (GHCR + EC2)
 # ═══════════════════════════════════════════════════════════════════
 
 name: Admin Panel CI/CD
 
 on:
   push:
-    branches: [main, develop]
-    paths:
-      - "admin-panel/**"
-      - ".github/workflows/admin.yml"
-  pull_request:
     branches: [main]
     paths:
       - "admin-panel/**"
+      - ".github/workflows/admin.yml"
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  # Converts repository name to lowercase to avoid Docker tagging errors
+  # IMAGE_NAME must match your docker-compose.yml image field
   IMAGE_NAME: tusharyadav235/dreamify-admin
 
 jobs:
@@ -46,9 +42,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=sha,prefix=sha-,format=short
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=latest
 
       - name: 🔧 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -57,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: admin-panel
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -66,7 +60,7 @@ jobs:
     name: 🚀 Deploy to EC2
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     environment: production
 
     steps:
@@ -76,22 +70,26 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: ${{ secrets.EC2_PORT || 22 }}
           script: |
             set -e
             cd ~/dreamify
             
-            # 1. Update the docker-compose and configs from Git
-            git pull origin main
+            echo "🌿 1. Syncing docker-compose and configs..."
+            git fetch --all
+            git reset --hard origin/main
             
-            # 2. Login to Registry on EC2 
-            # Note: Best to use a PAT (Personal Access Token) stored in secrets.GHCR_TOKEN
+            echo "🔑 2. Authenticating with GHCR..."
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
-            # 3. Pull and restart ONLY the admin container
+            echo "🐳 3. Pulling fresh Admin image from GHCR..."
             docker compose pull admin
-            docker compose up -d --no-deps admin
             
-            # 4. Cleanup old images to save memory/disk
+            echo "🚀 4. Recreating Admin container..."
+            # --no-deps ensures only the admin container restarts
+            # --force-recreate ensures it uses the new image layers
+            docker compose up -d --no-deps --force-recreate admin
+            
+            echo "🧹 5. Cleaning up old image layers..."
             docker image prune -f
-            echo "🎉 Admin deployment complete!"
+            
+            echo "🎉 [SUCCESS] Admin Panel is updated and LIVE!"
