@@ -19,7 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io
   # Hardcoded lowercase to prevent Docker 'Invalid Image Name' errors
-  IMAGE_NAME: tusharyadaav/dreamify-frontend
+  IMAGE_NAME: tusharyadav235/dreamify-frontend
 
 jobs:
   # ─────────────────────────────────────────────────────────────
