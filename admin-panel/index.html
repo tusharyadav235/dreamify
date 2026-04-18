@@ -2,138 +2,221 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Dreamify Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#080808;--surface:#0f0f0f;--surface2:#161616;--border:rgba(255,255,255,.08);--white:#fff;--gray:#888;--accent:#fff}
-    body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;display:flex;cursor:default}
+    :root{--bg:#080808;--surface:#0f0f0f;--surface2:#161616;--border:rgba(255,255,255,.08);--white:#fff;--gray:#888;--sw:260px}
+    html{-webkit-text-size-adjust:100%}
+    body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;display:flex;overflow-x:hidden}
 
-    /* LOGIN */
-    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%;background:var(--bg);position:fixed;inset:0;z-index:900;transition:opacity .5s}
+    /* ── LOGIN ── */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%;background:var(--bg);position:fixed;inset:0;z-index:900;transition:opacity .5s;padding:20px}
     .login-wrap.hidden{opacity:0;pointer-events:none}
-    .login-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:56px 48px;width:100%;max-width:420px}
-    .login-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
-    .login-sub{font-size:12px;color:var(--gray);letter-spacing:.1em;margin-bottom:40px}
+    .login-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;width:100%;max-width:420px}
+    .login-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+    .login-sub{font-size:12px;color:var(--gray);letter-spacing:.1em;margin-bottom:32px}
     .login-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px;display:block}
-    .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:white;font-family:'Barlow',sans-serif;font-size:14px;outline:none;margin-bottom:16px;transition:border-color .3s}
+    .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:white;font-family:'Barlow',sans-serif;font-size:16px;outline:none;margin-bottom:16px;transition:border-color .3s}
     .login-input:focus{border-color:rgba(255,255,255,.3)}
-    .login-btn{width:100%;background:white;color:black;border:none;border-radius:10px;padding:16px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-top:8px}
-    .login-btn:hover{background:#e8e8e8}
+    .login-btn{width:100%;background:white;color:black;border:none;border-radius:10px;padding:16px;font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-top:8px}
+    .login-btn:active{background:#e0e0e0}
     .login-error{font-size:12px;color:#ff6b6b;margin-bottom:16px;display:none}
 
-    /* SIDEBAR */
-    .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:100vh;flex-shrink:0;position:fixed;left:0;top:0;bottom:0;z-index:10}
-    .sidebar-logo{padding:32px 28px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    /* ── LAYOUT ── */
+    .layout{display:flex;width:100%;min-height:100vh}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:19}
+    .sidebar-overlay.show{display:block}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:100vh;flex-shrink:0;position:fixed;left:0;top:0;bottom:0;z-index:20;transition:transform .3s cubic-bezier(.23,1,.32,1)}
+    .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
     .sidebar-logo-icon{width:32px;height:32px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .sidebar-logo-icon svg{width:18px;height:18px}
     .sidebar-logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.1em;text-transform:uppercase}
     .sidebar-badge{font-size:9px;letter-spacing:.15em;color:var(--gray);text-transform:uppercase;margin-left:auto;border:1px solid var(--border);border-radius:4px;padding:2px 6px}
-    .sidebar-nav{padding:20px 16px;flex:1}
-    .nav-section-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:0 12px;margin-bottom:8px;margin-top:16px}
-    .nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;letter-spacing:.03em;cursor:pointer;transition:background .2s,color .2s;margin-bottom:2px;border:none;background:transparent;width:100%;text-align:left}
-    .nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-    .nav-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+    .sidebar-nav{padding:16px 12px;flex:1;overflow-y:auto}
+    .nav-section-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:0 12px;margin-bottom:6px;margin-top:14px}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;color:rgba(255,255,255,.5);font-size:14px;font-weight:500;cursor:pointer;transition:background .2s,color .2s;margin-bottom:2px;border:none;background:transparent;width:100%;text-align:left;-webkit-tap-highlight-color:transparent}
+    .nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+    .nav-item:hover,.nav-item:active{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
     .nav-item.active{background:rgba(255,255,255,.1);color:white}
     .nav-item .badge{margin-left:auto;background:rgba(255,255,255,.1);color:var(--gray);font-size:10px;border-radius:100px;padding:2px 8px;min-width:20px;text-align:center}
     .nav-item.active .badge{background:white;color:black}
-    .sidebar-footer{padding:20px 16px;border-top:1px solid var(--border)}
-    .logout-btn{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;padding:10px 16px;border-radius:10px;transition:color .2s,background .2s;border:none;background:transparent;width:100%}
-    .logout-btn:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.05)}
+    .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border)}
+    .logout-btn{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;padding:12px 16px;border-radius:10px;transition:color .2s,background .2s;border:none;background:transparent;width:100%;-webkit-tap-highlight-color:transparent}
+    .logout-btn:hover,.logout-btn:active{color:rgba(255,255,255,.7);background:rgba(255,255,255,.05)}
     .logout-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
-    /* MAIN */
-    .main{flex:1;margin-left:260px;display:flex;flex-direction:column;min-height:100vh}
-    .topbar{padding:24px 40px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.8);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
-    .topbar-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;letter-spacing:.04em;text-transform:uppercase}
-    .topbar-right{display:flex;align-items:center;gap:12px}
-    .topbar-admin{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gray)}
-    .topbar-avatar{width:32px;height:32px;background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px}
-    .content{padding:40px;flex:1}
+    /* ── MAIN ── */
+    .main{flex:1;margin-left:var(--sw);display:flex;flex-direction:column;min-height:100vh;min-width:0}
 
-    /* PAGES */
+    /* ── TOPBAR ── */
+    .topbar{padding:0 24px;height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5;flex-shrink:0}
+    .topbar-left{display:flex;align-items:center;gap:14px}
+    .hamburger{display:none;background:transparent;border:none;padding:6px;border-radius:8px;cursor:pointer;color:white;-webkit-tap-highlight-color:transparent}
+    .hamburger svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+    .topbar-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
+    .topbar-right{display:flex;align-items:center;gap:10px}
+    .topbar-admin{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray)}
+    .topbar-avatar{width:32px;height:32px;background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px}
+    .admin-name{display:block}
+
+    /* ── CONTENT ── */
+    .content{padding:28px 28px 100px;flex:1}
+
+    /* ── PAGES ── */
     .page{display:none}
     .page.active{display:block}
 
-    /* STATS CARDS */
-    .stats-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}
-    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;transition:border-color .3s}
+    /* ── STAT CARDS ── */
+    .stats-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 18px;transition:border-color .3s}
     .stat-card:hover{border-color:rgba(255,255,255,.15)}
-    .stat-card-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
-    .stat-card-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:40px;line-height:1;letter-spacing:-.01em;margin-bottom:8px}
-    .stat-card-sub{font-size:12px;color:rgba(255,255,255,.3)}
+    .stat-card-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:10px}
+    .stat-card-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:36px;line-height:1;margin-bottom:6px}
+    .stat-card-sub{font-size:11px;color:rgba(255,255,255,.3)}
 
-    /* TABLE */
+    /* ── TABLE WRAP ── */
     .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-    .table-header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-    .table-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
-    .table-actions{display:flex;gap:10px;align-items:center}
-    .search-input{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 16px;color:white;font-family:'Barlow',sans-serif;font-size:13px;outline:none;width:220px;transition:border-color .3s}
+    .table-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .table-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+    .table-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search-input{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:white;font-family:'Barlow',sans-serif;font-size:13px;outline:none;width:200px;transition:border-color .3s}
     .search-input::placeholder{color:rgba(255,255,255,.2)}
     .search-input:focus{border-color:rgba(255,255,255,.25)}
-    .filter-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:white;font-family:'Barlow',sans-serif;font-size:13px;outline:none;cursor:pointer}
+    .filter-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:white;font-family:'Barlow',sans-serif;font-size:13px;outline:none;cursor:pointer}
     .filter-select option{background:#111}
-    table{width:100%;border-collapse:collapse}
-    th{padding:14px 28px;text-align:left;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);border-bottom:1px solid var(--border);font-weight:500}
-    td{padding:18px 28px;font-size:13.5px;color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.04)}
-    tr:last-child td{border-bottom:none}
-    tr:hover td{background:rgba(255,255,255,.02)}
-    .badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:600}
+
+    /* ── DESKTOP TABLE ── */
+    .desk-table{width:100%;border-collapse:collapse}
+    .desk-table th{padding:12px 22px;text-align:left;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);border-bottom:1px solid var(--border);font-weight:500}
+    .desk-table td{padding:16px 22px;font-size:13px;color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.04)}
+    .desk-table tr:last-child td{border-bottom:none}
+    .desk-table tr:hover td{background:rgba(255,255,255,.02)}
+
+    /* ── MOBILE CARD LIST ── */
+    .mob-list{display:none;flex-direction:column}
+    .mob-card{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
+    .mob-card:last-child{border-bottom:none}
+    .mob-card:active{background:rgba(255,255,255,.02)}
+    .mob-card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+    .mob-card-name{font-size:15px;font-weight:600;margin-bottom:2px}
+    .mob-card-sub{font-size:12px;color:var(--gray)}
+    .mob-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+    .mob-field{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px}
+    .mob-field-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:3px}
+    .mob-field-val{font-size:12px;color:rgba(255,255,255,.75)}
+    .mob-card-actions{display:flex;gap:8px}
+
+    /* ── BADGES ── */
+    .badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:600;white-space:nowrap}
     .badge-new{background:rgba(100,180,255,.1);color:#78b4ff;border:1px solid rgba(100,180,255,.2)}
     .badge-contacted{background:rgba(255,200,100,.1);color:#ffc864;border:1px solid rgba(255,200,100,.2)}
     .badge-completed{background:rgba(100,220,180,.1);color:#64dcb4;border:1px solid rgba(100,220,180,.2)}
-    .badge-web{background:rgba(120,180,255,.08);color:rgba(120,180,255,.7);border:1px solid rgba(120,180,255,.15)}
-    .badge-mobile{background:rgba(180,130,255,.08);color:rgba(180,130,255,.7);border:1px solid rgba(180,130,255,.15)}
-    .badge-cloud{background:rgba(100,220,180,.08);color:rgba(100,220,180,.7);border:1px solid rgba(100,220,180,.15)}
-    .action-btn{background:transparent;border:1px solid var(--border);border-radius:6px;color:rgba(255,255,255,.4);font-size:11px;padding:6px 12px;cursor:pointer;transition:all .2s;letter-spacing:.05em;font-family:'Barlow',sans-serif}
-    .action-btn:hover{border-color:rgba(255,255,255,.3);color:white;background:rgba(255,255,255,.06)}
-    .action-btn.danger:hover{border-color:rgba(255,100,100,.3);color:#ff6b6b;background:rgba(255,100,100,.05)}
-    .empty-state{text-align:center;padding:80px 40px;color:rgba(255,255,255,.2);font-size:14px}
-    .empty-icon{font-size:40px;margin-bottom:16px;opacity:.5}
+    .badge-web{background:rgba(120,180,255,.08);color:rgba(120,180,255,.8);border:1px solid rgba(120,180,255,.2)}
+    .badge-mobile{background:rgba(180,130,255,.08);color:rgba(180,130,255,.8);border:1px solid rgba(180,130,255,.2)}
+    .badge-cloud{background:rgba(100,220,180,.08);color:rgba(100,220,180,.8);border:1px solid rgba(100,220,180,.2)}
 
-    /* ADD TESTIMONIAL FORM */
-    .add-form{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:32px}
-    .add-form-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:12px}
-    .form-row-admin{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
-    .admin-input,.admin-textarea,.admin-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:white;font-family:'Barlow',sans-serif;font-size:13px;outline:none;transition:border-color .3s;width:100%}
+    /* ── ACTION BUTTONS ── */
+    .action-btn{background:transparent;border:1px solid var(--border);border-radius:6px;color:rgba(255,255,255,.45);font-size:11px;padding:7px 13px;cursor:pointer;transition:all .2s;letter-spacing:.05em;font-family:'Barlow',sans-serif;-webkit-tap-highlight-color:transparent}
+    .action-btn:hover,.action-btn:active{border-color:rgba(255,255,255,.3);color:white;background:rgba(255,255,255,.07)}
+    .action-btn.danger:hover,.action-btn.danger:active{border-color:rgba(255,100,100,.35);color:#ff6b6b;background:rgba(255,100,100,.06)}
+    .empty-state{text-align:center;padding:60px 24px;color:rgba(255,255,255,.2);font-size:14px}
+    .empty-icon{font-size:36px;margin-bottom:14px;opacity:.5}
+
+    /* ── TESTIMONIAL FORM ── */
+    .add-form{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:24px}
+    .add-form-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px}
+    .form-row-admin{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+    .admin-input,.admin-textarea,.admin-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:white;font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color .3s;width:100%}
     .admin-input::placeholder,.admin-textarea::placeholder{color:rgba(255,255,255,.2)}
     .admin-input:focus,.admin-textarea:focus,.admin-select:focus{border-color:rgba(255,255,255,.25)}
-    .admin-textarea{resize:vertical;min-height:100px;line-height:1.6}
+    .admin-textarea{resize:vertical;min-height:90px;line-height:1.6}
     .admin-select option{background:#111}
     .admin-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:6px;display:block}
     .form-group-admin{display:flex;flex-direction:column}
-    .star-picker{display:flex;gap:8px;margin-top:4px}
-    .star-btn{background:transparent;border:none;font-size:22px;cursor:pointer;transition:transform .2s;filter:grayscale(1);opacity:.4}
+    .star-picker{display:flex;gap:6px;margin-top:4px}
+    .star-btn{background:transparent;border:none;font-size:24px;cursor:pointer;transition:transform .15s;filter:grayscale(1);opacity:.4;padding:4px;-webkit-tap-highlight-color:transparent}
     .star-btn.on{filter:none;opacity:1}
-    .star-btn:hover{transform:scale(1.2)}
-    .btn-add{background:white;color:black;border:none;border-radius:10px;padding:14px 32px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px}
-    .btn-add:hover{background:#e8e8e8}
+    .star-btn:active{transform:scale(1.25)}
+    .btn-add{background:white;color:black;border:none;border-radius:10px;padding:14px 28px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
+    .btn-add:active{background:#e0e0e0}
 
-    /* ENQUIRY DETAIL MODAL */
-    .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:600;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .3s}
+    /* ── DETAIL MODAL (bottom sheet on mobile) ── */
+    .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
     .detail-overlay.open{opacity:1;pointer-events:all}
-    .detail-box{background:#0e0e0e;border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:580px;padding:40px;transform:translateY(20px);transition:transform .3s;max-height:85vh;overflow-y:auto}
+    .detail-box{background:#0e0e0e;border:1px solid rgba(255,255,255,.1);border-radius:24px 24px 0 0;width:100%;max-width:640px;padding:12px 28px 40px;transform:translateY(40px);transition:transform .35s cubic-bezier(.23,1,.32,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
     .detail-overlay.open .detail-box{transform:translateY(0)}
-    .detail-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
-    .detail-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;text-transform:uppercase;letter-spacing:.02em}
+    .pull-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 20px}
+    .detail-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+    .detail-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;text-transform:uppercase;letter-spacing:.02em}
     .detail-close{width:32px;height:32px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:transparent;color:rgba(255,255,255,.5);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
-    .detail-close:hover{border-color:white;color:white}
-    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
-    .detail-field{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px}
-    .detail-field-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:5px}
-    .detail-field-value{font-size:13.5px;color:rgba(255,255,255,.8)}
-    .detail-desc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:16px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px}
-    .status-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:white;font-family:'Barlow',sans-serif;font-size:12px;outline:none;cursor:pointer}
+    .detail-close:active{border-color:white;color:white}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .detail-field{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px}
+    .detail-field-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+    .detail-field-value{font-size:13px;color:rgba(255,255,255,.8);word-break:break-word}
+    .detail-desc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:18px}
+    .detail-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .status-select{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:white;font-family:'Barlow',sans-serif;font-size:13px;outline:none;cursor:pointer;flex:1;min-width:120px}
     .status-select option{background:#111}
+    .call-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:white;color:black;padding:11px 18px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex:1}
 
-    /* TOAST */
-    .toast{position:fixed;bottom:28px;right:28px;z-index:800;background:#0e0e0e;border:1px solid rgba(100,220,180,.3);border-radius:12px;padding:14px 20px;font-size:13px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform .4s cubic-bezier(.23,1,.32,1)}
-    .toast.show{transform:translateX(0)}
+    /* ── BOTTOM NAV (mobile only) ── */
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,8,.97);border-top:1px solid var(--border);backdrop-filter:blur(20px);z-index:50;padding-bottom:env(safe-area-inset-bottom,0)}
+    .bnav-inner{display:flex;justify-content:space-around;align-items:center}
+    .bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 16px;border-radius:10px;color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;min-width:64px;transition:color .2s;-webkit-tap-highlight-color:transparent;position:relative}
+    .bnav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1px}
+    .bnav-btn.active{color:white}
+    .bnav-dot{position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:#ff4444;display:none}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);z-index:800;background:#0e0e0e;border:1px solid rgba(100,220,180,.3);border-radius:12px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:10px;white-space:nowrap;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .toast-dot{width:7px;height:7px;background:#64dcb4;border-radius:50%;flex-shrink:0}
 
-    /* RESPONSIVE */
-    @media(max-width:1024px){.stats-cards{grid-template-columns:1fr 1fr}.form-row-admin{grid-template-columns:1fr 1fr}}
+    /* ── BREAKPOINTS ── */
+    @media(max-width:1024px){
+      .stats-cards{grid-template-columns:1fr 1fr}
+      .form-row-admin{grid-template-columns:1fr 1fr}
+      .search-input{width:150px}
+    }
+
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%)}
+      .sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.6)}
+      .main{margin-left:0}
+      .hamburger{display:flex}
+      .topbar{padding:0 16px;height:56px}
+      .topbar-title{font-size:18px}
+      .admin-name{display:none}
+      .content{padding:16px 16px 90px}
+      .stats-cards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+      .stat-card{padding:16px 14px;border-radius:12px}
+      .stat-card-num{font-size:28px}
+      .stat-card-label{font-size:9px;margin-bottom:8px}
+      /* Hide desktop table, show mobile cards */
+      .desk-table{display:none}
+      .mob-list{display:flex}
+      /* Form */
+      .form-row-admin{grid-template-columns:1fr}
+      .add-form{padding:20px}
+      /* Table header wraps */
+      .table-header{flex-direction:column;align-items:flex-start}
+      .table-actions{width:100%}
+      .search-input{width:100%}
+      .filter-select{width:100%}
+      /* Bottom nav */
+      .bottom-nav{display:block}
+    }
+
+    @media(max-width:400px){
+      .stats-cards{grid-template-columns:1fr 1fr}
+      .detail-grid{grid-template-columns:1fr}
+      .mob-card-grid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
@@ -145,130 +228,166 @@
     <div class="login-sub">Admin Panel — Restricted Access</div>
     <p class="login-error" id="loginError">Invalid credentials. Try again.</p>
     <label class="login-label">Username</label>
-    <input class="login-input" id="loginUser" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input class="login-input" id="loginUser" type="text" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/>
     <label class="login-label">Password</label>
-    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button class="login-btn" onclick="doLogin()">Sign In →</button>
   </div>
 </div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="sidebar-logo-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M4 16L10 4L16 16" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 11L13.5 11" stroke="black" stroke-width="2" stroke-linecap="round"/></svg></div>
-    <span class="sidebar-logo-text">Dreamify</span>
-    <span class="sidebar-badge">Admin</span>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Overview</div>
-    <button class="nav-item active" onclick="showPage('dashboard',this)">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </button>
-    <div class="nav-section-label">Client</div>
-    <button class="nav-item" onclick="showPage('enquiries',this)">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Enquiries
-      <span class="badge" id="enq-badge">0</span>
-    </button>
-    <div class="nav-section-label">Content</div>
-    <button class="nav-item" onclick="showPage('testimonials',this)">
-      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Testimonials
-    </button>
-  </nav>
-  <div class="sidebar-footer">
-    <button class="logout-btn" onclick="doLogout()">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Logout
-    </button>
-  </div>
-</aside>
+<div class="layout">
 
-<!-- MAIN -->
-<main class="main" id="mainArea">
-  <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">Dashboard</div>
-    <div class="topbar-right">
-      <div class="topbar-admin">
-        <div class="topbar-avatar">A</div>
-        Admin
-      </div>
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M4 16L10 4L16 16" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 11L13.5 11" stroke="black" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <span class="sidebar-logo-text">Dreamify</span>
+      <span class="sidebar-badge">Admin</span>
     </div>
-  </div>
-  <div class="content">
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <button class="nav-item active" onclick="go('dashboard',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <div class="nav-section-label">Client</div>
+      <button class="nav-item" onclick="go('enquiries',this)">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Enquiries
+        <span class="badge" id="sb-badge">0</span>
+      </button>
+      <div class="nav-section-label">Content</div>
+      <button class="nav-item" onclick="go('testimonials',this)">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Testimonials
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
+    </div>
+  </aside>
 
-    <!-- DASHBOARD PAGE -->
-    <div class="page active" id="page-dashboard">
-      <div class="stats-cards">
-        <div class="stat-card"><div class="stat-card-label">Total Enquiries</div><div class="stat-card-num" id="d-total">—</div><div class="stat-card-sub">All time</div></div>
-        <div class="stat-card"><div class="stat-card-label">New</div><div class="stat-card-num" id="d-new">—</div><div class="stat-card-sub">Awaiting response</div></div>
-        <div class="stat-card"><div class="stat-card-label">Testimonials</div><div class="stat-card-num" id="d-testi">—</div><div class="stat-card-sub">Published</div></div>
-        <div class="stat-card"><div class="stat-card-label">Satisfaction</div><div class="stat-card-num">98%</div><div class="stat-card-sub">Based on feedback</div></div>
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-title" id="pageTitle">Dashboard</div>
       </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Recent Enquiries</div>
-          <button class="action-btn" onclick="showPage('enquiries',null)">View All →</button>
+      <div class="topbar-right">
+        <div class="topbar-admin">
+          <div class="topbar-avatar">A</div>
+          <span class="admin-name">Admin</span>
         </div>
-        <table><thead><tr><th>Client</th><th>Service</th><th>Budget</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody id="recent-body"><tr><td colspan="5" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading...</td></tr></tbody></table>
       </div>
     </div>
 
-    <!-- ENQUIRIES PAGE -->
-    <div class="page" id="page-enquiries">
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Client Enquiries</div>
-          <div class="table-actions">
-            <input class="search-input" id="enq-search" placeholder="Search by name or email..." oninput="filterEnquiries()"/>
-            <select class="filter-select" id="enq-filter" onchange="filterEnquiries()">
-              <option value="">All Status</option>
-              <option value="NEW">New</option>
-              <option value="CONTACTED">Contacted</option>
-              <option value="COMPLETED">Completed</option>
-            </select>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-cards">
+          <div class="stat-card"><div class="stat-card-label">Total</div><div class="stat-card-num" id="d-total">—</div><div class="stat-card-sub">Enquiries</div></div>
+          <div class="stat-card"><div class="stat-card-label">New</div><div class="stat-card-num" id="d-new">—</div><div class="stat-card-sub">Awaiting</div></div>
+          <div class="stat-card"><div class="stat-card-label">Reviews</div><div class="stat-card-num" id="d-testi">—</div><div class="stat-card-sub">Published</div></div>
+          <div class="stat-card"><div class="stat-card-label">Rating</div><div class="stat-card-num">98%</div><div class="stat-card-sub">Satisfaction</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">Recent Enquiries</div>
+            <button class="action-btn" onclick="go('enquiries',null)">View All →</button>
           </div>
+          <table class="desk-table"><thead><tr><th>Client</th><th>Service</th><th>Budget</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="dash-desk"><tr><td colspan="5" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading…</td></tr></tbody></table>
+          <div class="mob-list" id="dash-mob"></div>
         </div>
-        <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
-        <tbody id="enq-body"><tr><td colspan="8" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading...</td></tr></tbody></table>
       </div>
-    </div>
 
-    <!-- TESTIMONIALS PAGE -->
-    <div class="page" id="page-testimonials">
-      <div class="add-form">
-        <div class="add-form-title">✦ Add New Testimonial</div>
-        <div class="form-row-admin">
-          <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="t-name" placeholder="Amit Singh"/></div>
-          <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="t-role" placeholder="CEO, TechStart Delhi"/></div>
-          <div class="form-group-admin"><label class="admin-label">Rating</label>
-            <div class="star-picker" id="starPicker">
-              <button class="star-btn on" onclick="setStars(1)">★</button>
-              <button class="star-btn on" onclick="setStars(2)">★</button>
-              <button class="star-btn on" onclick="setStars(3)">★</button>
-              <button class="star-btn on" onclick="setStars(4)">★</button>
-              <button class="star-btn on" onclick="setStars(5)">★</button>
+      <!-- ENQUIRIES -->
+      <div class="page" id="page-enquiries">
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">Client Enquiries</div>
+            <div class="table-actions">
+              <input class="search-input" id="enq-search" placeholder="Search name / email…" oninput="filterEnq()"/>
+              <select class="filter-select" id="enq-filter" onchange="filterEnq()">
+                <option value="">All Status</option>
+                <option value="NEW">New</option>
+                <option value="CONTACTED">Contacted</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
             </div>
           </div>
+          <table class="desk-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody id="enq-desk"><tr><td colspan="8" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading…</td></tr></tbody></table>
+          <div class="mob-list" id="enq-mob"></div>
         </div>
-        <div class="form-group-admin" style="margin-bottom:20px"><label class="admin-label">Testimonial Content *</label><textarea class="admin-textarea" id="t-content" placeholder="What did the client say about Dreamify?"></textarea></div>
-        <button class="btn-add" onclick="addTestimonial()">Add Testimonial ✦</button>
       </div>
-      <div class="table-wrap">
-        <div class="table-header"><div class="table-title">All Testimonials</div></div>
-        <table><thead><tr><th>Client</th><th>Role</th><th>Rating</th><th>Content</th><th>Actions</th></tr></thead>
-        <tbody id="testi-body"><tr><td colspan="5" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading...</td></tr></tbody></table>
+
+      <!-- TESTIMONIALS -->
+      <div class="page" id="page-testimonials">
+        <div class="add-form">
+          <div class="add-form-title">✦ Add Testimonial</div>
+          <div class="form-row-admin">
+            <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="t-name" placeholder="Amit Singh"/></div>
+            <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="t-role" placeholder="CEO, TechStart"/></div>
+            <div class="form-group-admin"><label class="admin-label">Rating</label>
+              <div class="star-picker" id="starPicker">
+                <button class="star-btn on" onclick="setStars(1)">★</button>
+                <button class="star-btn on" onclick="setStars(2)">★</button>
+                <button class="star-btn on" onclick="setStars(3)">★</button>
+                <button class="star-btn on" onclick="setStars(4)">★</button>
+                <button class="star-btn on" onclick="setStars(5)">★</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group-admin" style="margin-bottom:18px"><label class="admin-label">Content *</label><textarea class="admin-textarea" id="t-content" placeholder="What did the client say?"></textarea></div>
+          <button class="btn-add" onclick="addTesti()">Add Testimonial ✦</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">All Testimonials</div></div>
+          <table class="desk-table"><thead><tr><th>Client</th><th>Role</th><th>Rating</th><th>Content</th><th></th></tr></thead>
+            <tbody id="testi-desk"><tr><td colspan="5" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading…</td></tr></tbody></table>
+          <div class="mob-list" id="testi-mob"></div>
+        </div>
       </div>
+
     </div>
+  </main>
 
-  </div>
-</main>
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="bnav-inner">
+      <button class="bnav-btn active" id="bn-dashboard" onclick="go('dashboard',this,'bn')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Home
+      </button>
+      <button class="bnav-btn" id="bn-enquiries" onclick="go('enquiries',this,'bn')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="bnav-dot" id="bn-dot"></span>Leads
+      </button>
+      <button class="bnav-btn" id="bn-testimonials" onclick="go('testimonials',this,'bn')">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews
+      </button>
+      <button class="bnav-btn" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout
+      </button>
+    </div>
+  </nav>
 
-<!-- ENQUIRY DETAIL MODAL -->
-<div class="detail-overlay" id="detailOverlay">
+</div>
+
+<!-- DETAIL BOTTOM SHEET -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
   <div class="detail-box">
+    <div class="pull-handle"></div>
     <div class="detail-header">
       <div class="detail-name" id="d-name">—</div>
       <button class="detail-close" onclick="closeDetail()">✕</button>
@@ -279,17 +398,16 @@
       <div class="detail-field"><div class="detail-field-label">Company</div><div class="detail-field-value" id="d-company">—</div></div>
       <div class="detail-field"><div class="detail-field-label">Service</div><div class="detail-field-value" id="d-service">—</div></div>
       <div class="detail-field"><div class="detail-field-label">Budget</div><div class="detail-field-value" id="d-budget">—</div></div>
-      <div class="detail-field"><div class="detail-field-label">Submitted</div><div class="detail-field-value" id="d-date">—</div></div>
+      <div class="detail-field"><div class="detail-field-label">Date</div><div class="detail-field-value" id="d-date">—</div></div>
     </div>
-    <div class="detail-field" style="margin-bottom:20px"><div class="detail-field-label">Project Description</div><div style="margin-top:8px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.7" id="d-desc">—</div></div>
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <span style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray)">Update Status:</span>
+    <div class="detail-desc" id="d-desc">—</div>
+    <div class="detail-actions">
       <select class="status-select" id="d-status-sel" onchange="updateStatus()">
         <option value="NEW">New</option>
         <option value="CONTACTED">Contacted</option>
         <option value="COMPLETED">Completed</option>
       </select>
-      <a id="d-call-link" href="#" style="display:inline-flex;align-items:center;gap:8px;background:white;color:black;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">📞 Call Client</a>
+      <a id="d-call-link" href="#" class="call-btn">📞 Call Client</a>
     </div>
   </div>
 </div>
@@ -298,195 +416,234 @@
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg">Done!</span></div>
 
 <script>
-  const API = '/api';
-  let allEnquiries = [], allTestimonials = [], selectedStars = 5, currentEnqId = null;
+const API='/api';
+let enqs=[],testis=[],stars=5,curId=null;
 
-  // LOGIN
-  function doLogin(){
-    const u=document.getElementById('loginUser').value;
-    const p=document.getElementById('loginPass').value;
-    if(u==='admin'&&p==='dreamify2025'){
-      document.getElementById('loginWrap').classList.add('hidden');
-      loadDashboard();loadEnquiries();loadTestimonials();
-    } else {
-      document.getElementById('loginError').style.display='block';
-    }
+/* ── SIDEBAR ── */
+function toggleSidebar(){
+  const s=document.getElementById('sidebar'),o=document.getElementById('sbOverlay');
+  s.classList.toggle('open');o.classList.toggle('show');
+  document.body.style.overflow=s.classList.contains('open')?'hidden':'';
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+/* ── LOGIN ── */
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  if(u==='admin'&&p==='dreamify2025'){
+    document.getElementById('loginWrap').classList.add('hidden');
+    loadAll();
+  }else{
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('loginPass').value='';
   }
-  function doLogout(){document.getElementById('loginWrap').classList.remove('hidden')}
+}
+function doLogout(){document.getElementById('loginWrap').classList.remove('hidden');closeSidebar();}
 
-  // PAGES
-  function showPage(id,el){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    document.getElementById('page-'+id).classList.add('active');
-    if(el)el.classList.add('active');
-    const titles={dashboard:'Dashboard',enquiries:'Client Enquiries',testimonials:'Testimonials'};
-    document.getElementById('topbarTitle').textContent=titles[id]||id;
-  }
+/* ── NAVIGATION ── */
+const TITLES={dashboard:'Dashboard',enquiries:'Enquiries',testimonials:'Testimonials'};
+function go(id,el,src){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(n=>n.classList.remove('active'));
+  const sideBtn=document.querySelector(`.nav-item[onclick*="${id}"]`);
+  if(sideBtn)sideBtn.classList.add('active');
+  const bnBtn=document.getElementById('bn-'+id);
+  if(bnBtn)bnBtn.classList.add('active');
+  document.getElementById('pageTitle').textContent=TITLES[id]||id;
+  closeSidebar();
+  window.scrollTo(0,0);
+}
 
-  // TOAST
-  function showToast(msg,ok=true){
-    const t=document.getElementById('toast');
-    document.getElementById('toast-msg').textContent=msg;
-    t.style.borderColor=ok?'rgba(100,220,180,.3)':'rgba(255,100,100,.3)';
-    t.querySelector('.toast-dot').style.background=ok?'#64dcb4':'#ff6b6b';
-    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
-  }
+/* ── LOAD ── */
+async function loadAll(){await Promise.all([loadDash(),loadEnqs(),loadTestis()]);}
 
-  // LOAD DASHBOARD
-  async function loadDashboard(){
-    try{
-      const [enqRes,testiRes]=await Promise.all([fetch(API+'/enquiries'),fetch(API+'/testimonials')]);
-      const enqs=await enqRes.json();
-      const testis=await testiRes.json();
-      allEnquiries=enqs;allTestimonials=testis;
-      document.getElementById('d-total').textContent=enqs.length;
-      document.getElementById('d-new').textContent=enqs.filter(e=>e.status==='NEW').length;
-      document.getElementById('d-testi').textContent=testis.length;
-      document.getElementById('enq-badge').textContent=enqs.filter(e=>e.status==='NEW').length;
-      const recent=enqs.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
-      renderRecentTable(recent);
-    }catch(e){document.getElementById('d-total').textContent='—';showToast('API not reachable',false)}
-  }
+/* ── TOAST ── */
+function toast(msg,ok=true){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.style.borderColor=ok?'rgba(100,220,180,.3)':'rgba(255,100,100,.3)';
+  t.querySelector('.toast-dot').style.background=ok?'#64dcb4':'#ff6b6b';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
 
-  function renderRecentTable(rows){
-    const tb=document.getElementById('recent-body');
-    if(!rows.length){tb.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div>No enquiries yet</div></td></tr>';return}
-    tb.innerHTML=rows.map(r=>`<tr onclick="openDetail(${r.id})" style="cursor:pointer">
-      <td><strong>${r.firstName} ${r.lastName||''}</strong><br><span style="font-size:11px;color:var(--gray)">${r.email}</span></td>
-      <td><span class="badge ${serviceBadge(r.service)}">${r.service||'—'}</span></td>
-      <td style="font-size:12px;color:var(--gray)">${r.budget||'—'}</td>
-      <td style="font-size:12px;color:var(--gray)">${fmtDate(r.createdAt)}</td>
-      <td><span class="badge ${statusBadge(r.status)}">${r.status||'NEW'}</span></td>
-    </tr>`).join('');
-  }
+/* ── DASHBOARD ── */
+async function loadDash(){
+  try{
+    const[er,tr]=await Promise.all([fetch(API+'/enquiries'),fetch(API+'/testimonials')]);
+    enqs=await er.json(); testis=await tr.json();
+    const nw=enqs.filter(e=>e.status==='NEW').length;
+    document.getElementById('d-total').textContent=enqs.length;
+    document.getElementById('d-new').textContent=nw;
+    document.getElementById('d-testi').textContent=testis.length;
+    document.getElementById('sb-badge').textContent=nw;
+    const dot=document.getElementById('bn-dot');
+    if(dot)dot.style.display=nw>0?'block':'none';
+    const rec=enqs.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
+    drawDashDesk(rec); drawDashMob(rec);
+  }catch(e){document.getElementById('d-total').textContent='—';toast('API not reachable',false);}
+}
+function drawDashDesk(r){
+  const b=document.getElementById('dash-desk');
+  if(!r.length){b.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div>No enquiries yet</div></td></tr>';return}
+  b.innerHTML=r.map(x=>`<tr onclick="openDetail(${x.id})" style="cursor:pointer">
+    <td><strong>${x.firstName} ${x.lastName||''}</strong><br><span style="font-size:11px;color:var(--gray)">${x.email}</span></td>
+    <td><span class="badge ${sbadge(x.service)}">${x.service||'—'}</span></td>
+    <td style="font-size:12px;color:var(--gray)">${x.budget||'—'}</td>
+    <td style="font-size:12px;color:var(--gray)">${fmt(x.createdAt)}</td>
+    <td><span class="badge ${stbadge(x.status)}">${x.status||'NEW'}</span></td>
+  </tr>`).join('');
+}
+function drawDashMob(r){
+  const b=document.getElementById('dash-mob');
+  if(!r.length){b.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div>No enquiries yet</div>';return}
+  b.innerHTML=r.map(x=>`<div class="mob-card" onclick="openDetail(${x.id})">
+    <div class="mob-card-head"><div><div class="mob-card-name">${x.firstName} ${x.lastName||''}</div><div class="mob-card-sub">${x.email}</div></div>
+    <span class="badge ${stbadge(x.status)}">${x.status||'NEW'}</span></div>
+    <div class="mob-card-grid">
+      <div class="mob-field"><div class="mob-field-lbl">Service</div><div class="mob-field-val">${x.service||'—'}</div></div>
+      <div class="mob-field"><div class="mob-field-lbl">Budget</div><div class="mob-field-val">${x.budget||'—'}</div></div>
+    </div>
+  </div>`).join('');
+}
 
-  // ENQUIRIES
-  async function loadEnquiries(){
-    try{
-      const res=await fetch(API+'/enquiries');
-      allEnquiries=await res.json();
-      renderEnqTable(allEnquiries);
-    }catch(e){document.getElementById('enq-body').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load enquiries</div></td></tr>'}
-  }
+/* ── ENQUIRIES ── */
+async function loadEnqs(){
+  try{const r=await fetch(API+'/enquiries');enqs=await r.json();drawEnqDesk(enqs);drawEnqMob(enqs);}
+  catch(e){document.getElementById('enq-desk').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load</div></td></tr>';}
+}
+function drawEnqDesk(r){
+  const b=document.getElementById('enq-desk');
+  if(!r.length){b.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div>No enquiries yet</div></td></tr>';return}
+  b.innerHTML=r.map(x=>`<tr>
+    <td><strong>${x.firstName} ${x.lastName||''}</strong></td>
+    <td style="font-size:12px">${x.email}</td>
+    <td style="font-size:12px;color:var(--gray)">${x.phone||'—'}</td>
+    <td><span class="badge ${sbadge(x.service)}">${(x.service||'').substring(0,12)}</span></td>
+    <td style="font-size:12px;color:var(--gray)">${x.budget||'—'}</td>
+    <td><span class="badge ${stbadge(x.status)}">${x.status||'NEW'}</span></td>
+    <td style="font-size:12px;color:var(--gray)">${fmt(x.createdAt)}</td>
+    <td><div style="display:flex;gap:6px">
+      <button class="action-btn" onclick="openDetail(${x.id})">View</button>
+      <button class="action-btn danger" onclick="delEnq(${x.id},event)">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+function drawEnqMob(r){
+  const b=document.getElementById('enq-mob');
+  if(!r.length){b.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div>No enquiries yet</div>';return}
+  b.innerHTML=r.map(x=>`<div class="mob-card" onclick="openDetail(${x.id})">
+    <div class="mob-card-head"><div><div class="mob-card-name">${x.firstName} ${x.lastName||''}</div><div class="mob-card-sub">${x.email}</div></div>
+    <span class="badge ${stbadge(x.status)}">${x.status||'NEW'}</span></div>
+    <div class="mob-card-grid">
+      <div class="mob-field"><div class="mob-field-lbl">Phone</div><div class="mob-field-val">${x.phone||'—'}</div></div>
+      <div class="mob-field"><div class="mob-field-lbl">Service</div><div class="mob-field-val">${x.service||'—'}</div></div>
+      <div class="mob-field"><div class="mob-field-lbl">Budget</div><div class="mob-field-val">${x.budget||'—'}</div></div>
+      <div class="mob-field"><div class="mob-field-lbl">Date</div><div class="mob-field-val">${fmt(x.createdAt)}</div></div>
+    </div>
+    <div class="mob-card-actions">
+      <button class="action-btn" style="flex:1" onclick="event.stopPropagation();openDetail(${x.id})">View Details</button>
+      <button class="action-btn danger" onclick="event.stopPropagation();delEnq(${x.id},event)">Delete</button>
+    </div>
+  </div>`).join('');
+}
+function filterEnq(){
+  const q=document.getElementById('enq-search').value.toLowerCase();
+  const st=document.getElementById('enq-filter').value;
+  let r=enqs;
+  if(q)r=r.filter(x=>(x.firstName+' '+(x.lastName||'')+x.email).toLowerCase().includes(q));
+  if(st)r=r.filter(x=>x.status===st);
+  drawEnqDesk(r);drawEnqMob(r);
+}
+async function delEnq(id,e){
+  if(e)e.stopPropagation();
+  if(!confirm('Delete this enquiry?'))return;
+  try{await fetch(API+'/enquiries/'+id,{method:'DELETE'});toast('Enquiry deleted');await loadEnqs();await loadDash();}
+  catch(e){toast('Failed to delete',false);}
+}
 
-  function renderEnqTable(rows){
-    const tb=document.getElementById('enq-body');
-    if(!rows.length){tb.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div>No enquiries yet</div></td></tr>';return}
-    tb.innerHTML=rows.map(r=>`<tr>
-      <td><strong>${r.firstName} ${r.lastName||''}</strong></td>
-      <td style="font-size:12px">${r.email}</td>
-      <td style="font-size:12px;color:var(--gray)">${r.phone||'—'}</td>
-      <td><span class="badge ${serviceBadge(r.service)}">${(r.service||'').substring(0,14)}</span></td>
-      <td style="font-size:12px;color:var(--gray)">${r.budget||'—'}</td>
-      <td><span class="badge ${statusBadge(r.status)}">${r.status||'NEW'}</span></td>
-      <td style="font-size:12px;color:var(--gray)">${fmtDate(r.createdAt)}</td>
-      <td style="display:flex;gap:6px">
-        <button class="action-btn" onclick="openDetail(${r.id})">View</button>
-        <button class="action-btn danger" onclick="deleteEnq(${r.id})">Delete</button>
-      </td>
-    </tr>`).join('');
-  }
+/* ── DETAIL ── */
+function openDetail(id){
+  const x=enqs.find(e=>e.id===id);if(!x)return;
+  curId=id;
+  document.getElementById('d-name').textContent=x.firstName+' '+(x.lastName||'');
+  document.getElementById('d-email').textContent=x.email;
+  document.getElementById('d-phone').textContent=x.phone||'—';
+  document.getElementById('d-company').textContent=x.company||'—';
+  document.getElementById('d-service').textContent=x.service||'—';
+  document.getElementById('d-budget').textContent=x.budget||'—';
+  document.getElementById('d-date').textContent=fmt(x.createdAt);
+  document.getElementById('d-desc').textContent=x.description||'No description provided.';
+  document.getElementById('d-status-sel').value=x.status||'NEW';
+  document.getElementById('d-call-link').href='tel:+91'+(x.phone||'');
+  document.getElementById('detailOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');document.body.style.overflow='';}
+async function updateStatus(){
+  const v=document.getElementById('d-status-sel').value;
+  try{
+    await fetch(API+'/enquiries/'+curId+'/status',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:v})});
+    toast('Status updated ✓');await loadEnqs();await loadDash();
+  }catch(e){toast('Failed',false);}
+}
 
-  function filterEnquiries(){
-    const q=document.getElementById('enq-search').value.toLowerCase();
-    const st=document.getElementById('enq-filter').value;
-    let rows=allEnquiries;
-    if(q)rows=rows.filter(r=>(r.firstName+' '+r.lastName+r.email).toLowerCase().includes(q));
-    if(st)rows=rows.filter(r=>r.status===st);
-    renderEnqTable(rows);
-  }
+/* ── TESTIMONIALS ── */
+async function loadTestis(){
+  try{const r=await fetch(API+'/testimonials');testis=await r.json();drawTestiDesk(testis);drawTestiMob(testis);document.getElementById('d-testi').textContent=testis.length;}
+  catch(e){document.getElementById('testi-desk').innerHTML='<tr><td colspan="5"><div class="empty-state">Could not load</div></td></tr>';}
+}
+function drawTestiDesk(r){
+  const b=document.getElementById('testi-desk');
+  if(!r.length){b.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⭐</div>No testimonials yet</div></td></tr>';return}
+  b.innerHTML=r.map(x=>`<tr>
+    <td><strong>${x.clientName}</strong></td>
+    <td style="font-size:12px;color:var(--gray)">${x.clientRole||'—'}</td>
+    <td>${'★'.repeat(x.rating||5)}</td>
+    <td style="font-size:12px;color:rgba(255,255,255,.55);max-width:260px">${x.content.substring(0,80)}${x.content.length>80?'...':''}</td>
+    <td><button class="action-btn danger" onclick="delTesti(${x.id})">Delete</button></td>
+  </tr>`).join('');
+}
+function drawTestiMob(r){
+  const b=document.getElementById('testi-mob');
+  if(!r.length){b.innerHTML='<div class="empty-state"><div class="empty-icon">⭐</div>No testimonials yet</div>';return}
+  b.innerHTML=r.map(x=>`<div class="mob-card">
+    <div class="mob-card-head">
+      <div><div class="mob-card-name">${x.clientName}</div><div class="mob-card-sub">${x.clientRole||'—'}</div></div>
+      <div style="color:#ffd700;font-size:14px">${'★'.repeat(x.rating||5)}</div>
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:12px">"${x.content.substring(0,100)}${x.content.length>100?'...':''}"</div>
+    <button class="action-btn danger" style="width:100%" onclick="delTesti(${x.id})">Delete</button>
+  </div>`).join('');
+}
+function setStars(n){stars=n;document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));}
+async function addTesti(){
+  const name=document.getElementById('t-name').value.trim();
+  const role=document.getElementById('t-role').value.trim();
+  const content=document.getElementById('t-content').value.trim();
+  if(!name||!content){toast('Name and content required',false);return}
+  try{
+    const r=await fetch(API+'/testimonials',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clientName:name,clientRole:role,rating:stars,content})});
+    if(r.ok){document.getElementById('t-name').value='';document.getElementById('t-role').value='';document.getElementById('t-content').value='';setStars(5);toast('Testimonial added ✦');loadTestis();}
+  }catch(e){toast('Failed to add',false);}
+}
+async function delTesti(id){
+  if(!confirm('Delete?'))return;
+  try{await fetch(API+'/testimonials/'+id,{method:'DELETE'});toast('Deleted');loadTestis();}
+  catch(e){toast('Failed',false);}
+}
 
-  async function deleteEnq(id){
-    if(!confirm('Delete this enquiry?'))return;
-    try{
-      await fetch(API+'/enquiries/'+id,{method:'DELETE'});
-      showToast('Enquiry deleted');loadEnquiries();loadDashboard();
-    }catch(e){showToast('Failed to delete',false)}
-  }
-
-  // DETAIL
-  function openDetail(id){
-    const r=allEnquiries.find(e=>e.id===id);if(!r)return;
-    currentEnqId=id;
-    document.getElementById('d-name').textContent=r.firstName+' '+(r.lastName||'');
-    document.getElementById('d-email').textContent=r.email;
-    document.getElementById('d-phone').textContent=r.phone||'—';
-    document.getElementById('d-company').textContent=r.company||'—';
-    document.getElementById('d-service').textContent=r.service||'—';
-    document.getElementById('d-budget').textContent=r.budget||'—';
-    document.getElementById('d-date').textContent=fmtDate(r.createdAt);
-    document.getElementById('d-desc').textContent=r.description||'No description provided.';
-    document.getElementById('d-status-sel').value=r.status||'NEW';
-    document.getElementById('d-call-link').href='tel:+91'+r.phone;
-    document.getElementById('detailOverlay').classList.add('open');
-  }
-  function closeDetail(){document.getElementById('detailOverlay').classList.remove('open')}
-  document.getElementById('detailOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('detailOverlay'))closeDetail()});
-
-  async function updateStatus(){
-    const sel=document.getElementById('d-status-sel').value;
-    try{
-      await fetch(API+'/enquiries/'+currentEnqId+'/status',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:sel})});
-      showToast('Status updated');loadEnquiries();loadDashboard();
-    }catch(e){showToast('Failed to update',false)}
-  }
-
-  // TESTIMONIALS
-  async function loadTestimonials(){
-    try{
-      const res=await fetch(API+'/testimonials');
-      allTestimonials=await res.json();
-      renderTestiTable(allTestimonials);
-      document.getElementById('d-testi').textContent=allTestimonials.length;
-    }catch(e){document.getElementById('testi-body').innerHTML='<tr><td colspan="5"><div class="empty-state">Could not load</div></td></tr>'}
-  }
-
-  function renderTestiTable(rows){
-    const tb=document.getElementById('testi-body');
-    if(!rows.length){tb.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⭐</div>No testimonials yet</div></td></tr>';return}
-    tb.innerHTML=rows.map(r=>`<tr>
-      <td><strong>${r.clientName}</strong></td>
-      <td style="font-size:12px;color:var(--gray)">${r.clientRole||'—'}</td>
-      <td>${'★'.repeat(r.rating||5)}</td>
-      <td style="font-size:12px;color:rgba(255,255,255,.55);max-width:300px">${r.content.substring(0,90)}${r.content.length>90?'...':''}</td>
-      <td><button class="action-btn danger" onclick="deleteTesti(${r.id})">Delete</button></td>
-    </tr>`).join('');
-  }
-
-  function setStars(n){
-    selectedStars=n;
-    document.querySelectorAll('.star-btn').forEach((b,i)=>{b.classList.toggle('on',i<n)});
-  }
-
-  async function addTestimonial(){
-    const name=document.getElementById('t-name').value.trim();
-    const role=document.getElementById('t-role').value.trim();
-    const content=document.getElementById('t-content').value.trim();
-    if(!name||!content){showToast('Name and content required',false);return}
-    try{
-      const res=await fetch(API+'/testimonials',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clientName:name,clientRole:role,rating:selectedStars,content})});
-      if(res.ok){
-        document.getElementById('t-name').value='';
-        document.getElementById('t-role').value='';
-        document.getElementById('t-content').value='';
-        showToast('Testimonial added ✦');loadTestimonials();
-      }
-    }catch(e){showToast('Failed to add',false)}
-  }
-
-  async function deleteTesti(id){
-    if(!confirm('Delete this testimonial?'))return;
-    try{
-      await fetch(API+'/testimonials/'+id,{method:'DELETE'});
-      showToast('Testimonial deleted');loadTestimonials();
-    }catch(e){showToast('Failed to delete',false)}
-  }
-
-  // HELPERS
-  function statusBadge(s){return s==='CONTACTED'?'badge-contacted':s==='COMPLETED'?'badge-completed':'badge-new'}
-  function serviceBadge(s){if(!s)return'';const sl=s.toLowerCase();return sl.includes('mobile')?'badge-mobile':sl.includes('cloud')?'badge-cloud':'badge-web'}
-  function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}
+/* ── HELPERS ── */
+function stbadge(s){return s==='CONTACTED'?'badge-contacted':s==='COMPLETED'?'badge-completed':'badge-new'}
+function sbadge(s){if(!s)return'';const l=s.toLowerCase();return l.includes('mobile')?'badge-mobile':l.includes('cloud')?'badge-cloud':'badge-web'}
+function fmt(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeSidebar();}});
 </script>
 </body>
 </html>
