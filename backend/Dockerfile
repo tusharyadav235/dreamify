@@ -1,21 +1,19 @@
-# ── Stage 1: Build ──────────────────────────────────────────
-FROM maven:3.9.6-eclipse-temurin-17 AS builder
-WORKDIR /app
-COPY pom.xml .
-# Download dependencies first (cached layer)
-RUN mvn dependency:go-offline -q
-COPY src ./src
-RUN mvn clean package -DskipTests -q
-
-# ── Stage 2: Run ─────────────────────────────────────────────
+# ── Use a lightweight JRE for the final image ──
 FROM eclipse-temurin:17-jre-alpine
+
+# Create a non-root user for security
+RUN addgroup -S dreamify && adduser -S dreamify -G dreamify
+
 WORKDIR /app
 
-# Create non-root user for security
-RUN addgroup -S dreamify && adduser -S dreamify -G dreamify
-USER dreamify
+# ── THE CRITICAL CHANGE ──
+# We stop building INSIDE Docker. 
+# We COPY the fresh JAR that Maven just built in the GitHub Action runner.
+COPY target/*.jar app.jar
 
-COPY --from=builder /app/target/dreamify-backend-1.0.0.jar app.jar
+# Fix permissions for the non-root user
+RUN chown -R dreamify:dreamify /app
+USER dreamify
 
 EXPOSE 8080
 
