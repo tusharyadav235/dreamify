@@ -77,12 +77,12 @@ jobs:
             
             if [ "$SERVICE" = "all" ]; then
               echo "🔄 Redeploying full stack..."
-              docker compose pull
-              docker compose up -d --remove-orphans
+              docker-compose pull
+              docker-compose up -d --remove-orphans
             else
               echo "🔄 Redeploying specific service: $SERVICE"
-              docker compose pull $SERVICE
-              docker compose up -d --no-deps $SERVICE
+              docker-compose pull $SERVICE
+              docker-compose up -d --no-deps $SERVICE
             fi
 
             # Cleanup dangling images to keep t2.micro disk healthy
