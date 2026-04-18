@@ -28,7 +28,7 @@ services:
 
   backend:
     # Points to your Docker Hub registry instead of local build
-    image: tusharyadaav/dreamify-backend:latest
+    image: tusharyadav235/dreamify-backend:latest
     container_name: dreamify-backend
     restart: unless-stopped
     environment:
