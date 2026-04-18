@@ -19,7 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io
   # Converts repository name to lowercase to avoid Docker tagging errors
-  IMAGE_NAME: tusharyadaav/dreamify-admin
+  IMAGE_NAME: tusharyadav235/dreamify-admin
 
 jobs:
   build:
