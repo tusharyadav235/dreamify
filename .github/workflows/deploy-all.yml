@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════
-#  DREAMIFY — MASTER DEPLOY PIPELINE (V2.1 - Production Optimized)
+#  DREAMIFY — MASTER DEPLOY PIPELINE (V2.2 - Race Condition Fixed)
 # ═══════════════════════════════════════════════════════════════════
 
 name: Full Stack Deploy
@@ -7,7 +7,6 @@ name: Full Stack Deploy
 on:
   push:
     branches: [main]
-    # Trigger on ANY file change so admin-panel updates are captured
     paths:
       - "**"
   workflow_dispatch:
@@ -24,12 +23,11 @@ jobs:
     name: ✅ Validate Config
     runs-on: ubuntu-latest
     steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: 🔍 Validate docker-compose
         run: |
           touch .env
-          docker compose config --quiet && echo "✅ docker-compose.yml is valid"
+          docker compose config --quiet && echo "✅ Valid"
 
   deploy:
     name: 🚀 Deploy — ${{ github.event.inputs.service || 'all' }}
@@ -37,62 +35,160 @@ jobs:
     needs: validate
     environment: production
     steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 🚀 SSH Execute & Sync
+      - name: 🚀 SSH Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: "15m"
           script: |
             set -e
             cd ~/dreamify
-            
-            echo "📥 Syncing EC2 with GitHub Main..."
+
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "  Dreamify Deploy  |  $(date '+%Y-%m-%d %H:%M:%S')"
+            echo "  Service : ${{ github.event.inputs.service || 'all' }}"
+            echo "  Commit  : ${{ github.sha }}"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+            # 1. SYNC CODE
             git fetch --all
             git reset --hard origin/main
+            echo "✅ Code: $(git log -1 --pretty=format:'%h %s')"
 
-            # ── SECRET INJECTION ──
-            echo "🔐 Syncing environment variables..."
-            echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" > .env
-            echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
-            echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
-            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-            echo "APP_DOMAIN=${{ secrets.APP_DOMAIN }}" >> .env
-            echo "✅ .env successfully updated."
+            # 2. WRITE .env
+            cat > .env << 'ENVEOF'
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            MYSQL_USER=${{ secrets.MYSQL_USER }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            APP_DOMAIN=${{ secrets.APP_DOMAIN }}
+            ENVEOF
+            echo "✅ .env written"
 
-            # Container Registry Login
-            echo "🔑 Logging into GHCR..."
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u tusharyadav235 --password-stdin
+            # 3. GHCR LOGIN
+            echo "${{ secrets.GHCR_TOKEN }}" | \
+              docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "✅ GHCR login OK"
 
+            # 4. DEPLOY
             SERVICE="${{ github.event.inputs.service || 'all' }}"
-            
+
             if [ "$SERVICE" = "all" ]; then
-              echo "🔄 Full Stack Reset: Cleaning up and redeploying..."
-              docker compose down --remove-orphans
+              echo "🔄 Full stack deploy — safe teardown..."
+
+              # STOP gracefully first (never skip this step)
+              docker compose stop || true
+
+              # ── KEY FIX: wait until every container has actually exited ──
+              # docker compose down immediately after stop can leave stale
+              # container IDs that the daemon hasn't fully removed yet,
+              # causing "No such container: <id>" on the next up.
+              echo "⏳ Waiting for containers to fully exit..."
+              WAIT=0
+              while true; do
+                RUNNING=$(docker compose ps --status running -q 2>/dev/null | wc -l)
+                if [ "$RUNNING" = "0" ]; then
+                  echo "✅ All containers exited."
+                  break
+                fi
+                sleep 3
+                WAIT=$((WAIT+3))
+                echo "  ... ${WAIT}s — ${RUNNING} still running"
+                if [ $WAIT -ge 60 ]; then
+                  echo "⚠️  Force-killing remaining containers..."
+                  docker compose kill || true
+                  sleep 3
+                  break
+                fi
+              done
+
+              # Remove stopped containers cleanly
+              docker compose rm -f 2>/dev/null || true
+              sleep 2
+
+              # Pull latest images
               docker compose pull
-              docker compose up -d 
+
+              # Start everything fresh
+              docker compose up -d
+
             else
-              echo "🔄 Targeted Redeploy: $SERVICE"
+              echo "🔄 Targeted deploy: $SERVICE"
+
+              docker compose stop $SERVICE || true
+
+              echo "⏳ Waiting for $SERVICE to exit..."
+              WAIT=0
+              while docker compose ps --status running $SERVICE 2>/dev/null | grep -q "$SERVICE"; do
+                sleep 3
+                WAIT=$((WAIT+3))
+                if [ $WAIT -ge 30 ]; then break; fi
+              done
+
+              docker compose rm -f $SERVICE 2>/dev/null || true
+              sleep 2
+
               docker compose pull $SERVICE
-              docker compose up -d --no-deps --force-recreate $SERVICE
+              docker compose up -d --no-deps $SERVICE
             fi
-            
+
+            # 5. WAIT FOR BACKEND HEALTH
+            echo "⏳ Waiting for backend (max 120s)..."
+            ELAPSED=0
+            until docker compose ps backend 2>/dev/null | grep -qE "healthy|running"; do
+              sleep 5
+              ELAPSED=$((ELAPSED+5))
+              echo "  ... ${ELAPSED}s"
+              if [ $ELAPSED -ge 120 ]; then
+                echo "⚠️  Backend health timeout — continuing anyway"
+                break
+              fi
+            done
+
+            # 6. STATUS
+            echo ""
+            docker compose ps
+
+            # 7. CLEANUP
             docker image prune -f
+            echo "🎉 Deploy done!"
 
       - name: 🩺 Smoke Test
         run: |
-          echo "Waiting for services to stabilize (15s)..."
-          sleep 15
-          
-          # Check site status
-          STATUS=$(curl -s -L -o /dev/null -w "%{http_code}" https://dreamify.info)
-          
-          if [ "$STATUS" = "200" ]; then
-            echo "✅ SUCCESS: Dreamify.info is LIVE (HTTP 200)"
-          else
-            echo "❌ ERROR: Dreamify.info returned HTTP $STATUS"
+          echo "⏳ Waiting 20s for nginx to stabilise..."
+          sleep 20
+
+          MAX=5
+          RETRY=0
+          STATUS=0
+
+          while [ $RETRY -lt $MAX ]; do
+            STATUS=$(curl -s -L -o /dev/null -w "%{http_code}" \
+              --max-time 15 --connect-timeout 10 \
+              https://dreamify.info || echo "000")
+
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ dreamify.info LIVE (HTTP 200)"
+              break
+            else
+              RETRY=$((RETRY+1))
+              echo "⚠️  Attempt $RETRY/$MAX — HTTP $STATUS, retrying in 10s..."
+              sleep 10
+            fi
+          done
+
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Smoke test FAILED after $MAX attempts (HTTP $STATUS)"
             exit 1
           fi
+
+      - name: ❌ Failure Summary
+        if: failure()
+        run: |
+          echo "DEPLOYMENT FAILED"
+          echo "Commit : ${{ github.sha }}"
+          echo "Logs   : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
