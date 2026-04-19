@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/testimonials")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TestimonialController {
 
     private final TestimonialRepository repo;
