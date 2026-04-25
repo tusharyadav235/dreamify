@@ -264,6 +264,10 @@
         <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         Testimonials
       </button>
+      <button class="nav-item" onclick="go('video-reviews',this)">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Video Reviews
+      </button>
     </nav>
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="doLogout()">
@@ -360,7 +364,67 @@
         </div>
       </div>
 
-    </div>
+      <!-- ─── VIDEO REVIEWS PAGE ──────────────────── -->
+      <div class="page" id="page-video-reviews">
+
+        <!-- Add form -->
+        <div class="add-form">
+          <div class="add-form-title">▶ Add Video Testimonial</div>
+          <div class="form-row-admin">
+            <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="vt-name" placeholder="Matthew West"/></div>
+            <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="vt-role" placeholder="CEO - Bloom Journal"/></div>
+            <div class="form-group-admin"><label class="admin-label">Rating</label>
+              <div class="star-picker" id="vtStarPicker">
+                <button class="star-btn on" onclick="setVTStars(1)">★</button>
+                <button class="star-btn on" onclick="setVTStars(2)">★</button>
+                <button class="star-btn on" onclick="setVTStars(3)">★</button>
+                <button class="star-btn on" onclick="setVTStars(4)">★</button>
+                <button class="star-btn on" onclick="setVTStars(5)">★</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group-admin" style="margin-bottom:14px">
+            <label class="admin-label">Video URL * (YouTube, Vimeo, or direct MP4)</label>
+            <input class="admin-input" id="vt-url" placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."/>
+          </div>
+          <div class="form-row-admin" style="grid-template-columns:1fr 1fr">
+            <div class="form-group-admin">
+              <label class="admin-label">Thumbnail URL (optional — auto from YouTube)</label>
+              <input class="admin-input" id="vt-thumb" placeholder="https://... (leave blank for YouTube auto-thumb)"/>
+            </div>
+            <div class="form-group-admin">
+              <label class="admin-label">Short Description (shown as caption)</label>
+              <input class="admin-input" id="vt-desc" placeholder="Amazing delivery, 5 stars!"/>
+            </div>
+          </div>
+          <!-- Preview row -->
+          <div id="vt-preview" style="display:none;margin-bottom:18px">
+            <label class="admin-label">Thumbnail Preview</label>
+            <img id="vt-preview-img" src="" alt="thumb"
+              style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.1);margin-top:6px"/>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn-add" onclick="addVideoTesti()">Add Video ▶</button>
+            <button class="action-btn" onclick="previewVTThumb()">Preview Thumbnail</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">All Video Testimonials</div>
+            <div style="font-size:12px;color:var(--gray)">Toggle active/hidden or delete</div>
+          </div>
+          <table class="desk-table">
+            <thead><tr><th>Client</th><th>Role</th><th>Rating</th><th>Video URL</th><th>Status</th><th></th></tr></thead>
+            <tbody id="vt-body-desk"></tbody>
+          </table>
+          <div class="mob-list" id="vt-body-mob"></div>
+        </div>
+
+      </div><!-- /page-video-reviews -->
+
+    </div><!-- /content -->
   </main>
 
   <!-- BOTTOM NAV -->
@@ -375,6 +439,9 @@
       </button>
       <button class="bnav-btn" id="bn-testimonials" onclick="go('testimonials',this,'bn')">
         <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews
+      </button>
+      <button class="bnav-btn" id="bn-video-reviews" onclick="go('video-reviews',this,'bn')">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Videos
       </button>
       <button class="bnav-btn" onclick="doLogout()">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout
@@ -446,7 +513,7 @@ function doLogin(){
 function doLogout(){document.getElementById('loginWrap').classList.remove('hidden');closeSidebar();}
 
 /* ── NAVIGATION ── */
-const TITLES={dashboard:'Dashboard',enquiries:'Enquiries',testimonials:'Testimonials'};
+const TITLES={dashboard:'Dashboard',enquiries:'Enquiries',testimonials:'Testimonials','video-reviews':'Video Reviews'};
 function go(id,el,src){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -462,7 +529,7 @@ function go(id,el,src){
 }
 
 /* ── LOAD ── */
-async function loadAll(){await Promise.all([loadDash(),loadEnqs(),loadTestis()]);}
+async function loadAll(){await Promise.all([loadDash(),loadEnqs(),loadTestis(),loadVideoTestis()]);}
 
 /* ── TOAST ── */
 function toast(msg,ok=true){
@@ -637,6 +704,185 @@ async function delTesti(id){
   if(!confirm('Delete?'))return;
   try{await fetch(API+'/testimonials/'+id,{method:'DELETE'});toast('Deleted');loadTestis();}
   catch(e){toast('Failed',false);}
+}
+
+/* ── VIDEO TESTIMONIALS ─────────────────────────────── */
+let vtStars = 5;
+let allVT   = [];
+
+async function loadVideoTestis(){
+  try{
+    const r = await fetch(API+'/video-testimonials/all');
+    allVT = await r.json();
+    drawVTDesk(allVT);
+    drawVTMob(allVT);
+    // Update dashboard stat if element exists
+    const el = document.getElementById('d-vt');
+    if(el) el.textContent = allVT.filter(v=>v.active).length;
+  }catch(e){
+    const b = document.getElementById('vt-body-desk');
+    if(b) b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load</div></td></tr>';
+  }
+}
+
+function ytThumbAdmin(url){
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
+}
+
+function drawVTDesk(rows){
+  const b = document.getElementById('vt-body-desk');
+  if(!rows.length){
+    b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">▶</div>No video testimonials yet</div></td></tr>';
+    return;
+  }
+  b.innerHTML = rows.map(v=>{
+    const thumb = v.thumbnailUrl || ytThumbAdmin(v.videoUrl) || '';
+    const shortUrl = v.videoUrl.length > 40 ? v.videoUrl.substring(0,40)+'…' : v.videoUrl;
+    const statusBadge = v.active
+      ? '<span class="badge badge-completed">● Live</span>'
+      : '<span class="badge badge-contacted">● Hidden</span>';
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${thumb
+            ? `<img src="${thumb}" style="width:52px;height:36px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`
+            : `<div style="width:52px;height:36px;background:rgba(255,255,255,.05);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">▶</div>`}
+          <strong>${v.clientName}</strong>
+        </div>
+      </td>
+      <td style="font-size:12px;color:var(--gray)">${v.clientRole||'—'}</td>
+      <td style="color:#ffd700">${'★'.repeat(v.rating||5)}</td>
+      <td style="font-size:11px;color:rgba(255,255,255,.4);max-width:180px;word-break:break-all">${shortUrl}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="action-btn" onclick="toggleVT(${v.id})">${v.active?'Hide':'Show'}</button>
+          <button class="action-btn danger" onclick="delVT(${v.id})">Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function drawVTMob(rows){
+  const b = document.getElementById('vt-body-mob');
+  if(!rows.length){
+    b.innerHTML='<div class="empty-state"><div class="empty-icon">▶</div>No video testimonials yet</div>';
+    return;
+  }
+  b.innerHTML = rows.map(v=>{
+    const thumb = v.thumbnailUrl || ytThumbAdmin(v.videoUrl) || '';
+    return `<div class="mob-card">
+      <div class="mob-card-head">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+          ${thumb
+            ? `<img src="${thumb}" style="width:56px;height:40px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`
+            : `<div style="width:56px;height:40px;background:rgba(255,255,255,.05);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center">▶</div>`}
+          <div style="min-width:0">
+            <div class="mob-card-name">${v.clientName}</div>
+            <div class="mob-card-sub">${v.clientRole||'—'}</div>
+          </div>
+        </div>
+        ${v.active
+          ? '<span class="badge badge-completed" style="flex-shrink:0">Live</span>'
+          : '<span class="badge badge-contacted" style="flex-shrink:0">Hidden</span>'}
+      </div>
+      <div class="mob-card-grid" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
+        <div class="mob-field">
+          <div class="mob-field-lbl">Rating</div>
+          <div class="mob-field-val" style="color:#ffd700">${'★'.repeat(v.rating||5)}</div>
+        </div>
+        <div class="mob-field">
+          <div class="mob-field-lbl">Description</div>
+          <div class="mob-field-val">${(v.description||'—').substring(0,30)}</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:rgba(255,255,255,.25);word-break:break-all;margin-bottom:12px">${v.videoUrl.substring(0,60)}…</div>
+      <div class="mob-card-actions">
+        <button class="action-btn" style="flex:1" onclick="toggleVT(${v.id})">${v.active?'Hide from site':'Show on site'}</button>
+        <button class="action-btn danger" onclick="delVT(${v.id})">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setVTStars(n){
+  vtStars = n;
+  document.querySelectorAll('#vtStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));
+}
+
+function previewVTThumb(){
+  const url = document.getElementById('vt-url').value.trim();
+  if(!url){ toast('Enter a video URL first',false); return; }
+  const manualThumb = document.getElementById('vt-thumb').value.trim();
+  const thumb = manualThumb || ytThumbAdmin(url);
+  if(!thumb){ toast('No thumbnail available for this URL. Paste one manually.',false); return; }
+  document.getElementById('vt-preview-img').src = thumb;
+  document.getElementById('vt-preview').style.display = 'block';
+  toast('Thumbnail loaded ✓');
+}
+
+async function addVideoTesti(){
+  const name  = document.getElementById('vt-name').value.trim();
+  const role  = document.getElementById('vt-role').value.trim();
+  const url   = document.getElementById('vt-url').value.trim();
+  const thumb = document.getElementById('vt-thumb').value.trim();
+  const desc  = document.getElementById('vt-desc').value.trim();
+
+  if(!name){ toast('Client name is required',false); return; }
+  if(!url){  toast('Video URL is required',false);   return; }
+
+  // Auto-fill thumbnail from YouTube if not provided
+  const autoThumb = thumb || ytThumbAdmin(url) || '';
+
+  try{
+    const res = await fetch(API+'/video-testimonials',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        clientName: name,
+        clientRole: role,
+        videoUrl: url,
+        thumbnailUrl: autoThumb,
+        description: desc,
+        rating: vtStars,
+        active: true
+      })
+    });
+    if(res.ok){
+      // Clear form
+      ['vt-name','vt-role','vt-url','vt-thumb','vt-desc'].forEach(id=>{
+        document.getElementById(id).value='';
+      });
+      setVTStars(5);
+      document.getElementById('vt-preview').style.display='none';
+      toast('Video testimonial added ▶');
+      loadVideoTestis();
+    } else {
+      const err = await res.text();
+      toast('Failed: '+err, false);
+    }
+  }catch(e){
+    toast('Could not connect to server',false);
+  }
+}
+
+async function toggleVT(id){
+  try{
+    await fetch(API+'/video-testimonials/'+id+'/toggle',{method:'PATCH'});
+    toast('Visibility updated');
+    loadVideoTestis();
+  }catch(e){ toast('Failed',false); }
+}
+
+async function delVT(id){
+  if(!confirm('Delete this video testimonial?')) return;
+  try{
+    await fetch(API+'/video-testimonials/'+id,{method:'DELETE'});
+    toast('Video deleted');
+    loadVideoTestis();
+  }catch(e){ toast('Failed to delete',false); }
 }
 
 /* ── HELPERS ── */
