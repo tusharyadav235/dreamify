@@ -237,6 +237,177 @@
     .toast.show{transform:translateX(0)}
     .toast-dot{width:8px;height:8px;background:#64dcb4;border-radius:50%;flex-shrink:0}
 
+    /* ── VIDEO TESTIMONIALS ─────────────────────────── */
+    .vt-section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:16px}
+    .vt-section-head h2{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(40px,5vw,68px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em}
+    .vt-section-head h2 span{color:rgba(255,255,255,.22)}
+    .vt-section-head p{font-size:14px;color:rgba(255,255,255,.38);max-width:300px;line-height:1.7;text-align:right}
+
+    /* Masonry bento container */
+    .vt-bento{
+      columns:3;
+      column-gap:16px;
+    }
+    .vt-item{
+      break-inside:avoid;
+      margin-bottom:16px;
+      border-radius:20px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* ── VIDEO CARD ── */
+    .vt-video{
+      aspect-ratio:9/14;
+      background:#0a0a0a;
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:20px;
+      overflow:hidden;
+      position:relative;
+      cursor:none;
+    }
+    .vt-video.tall{ aspect-ratio:9/16; }
+    .vt-video.square{ aspect-ratio:1/1; }
+    .vt-video img.vt-thumb{
+      width:100%;height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .5s cubic-bezier(.23,1,.32,1),filter .4s;
+      filter:brightness(.75);
+    }
+    .vt-video:hover img.vt-thumb{
+      transform:scale(1.04);
+      filter:brightness(.55);
+    }
+    /* Play button */
+    .vt-play{
+      position:absolute;inset:0;
+      display:flex;align-items:center;justify-content:center;
+      z-index:2;
+    }
+    .vt-play-btn{
+      width:56px;height:56px;
+      background:rgba(255,255,255,.15);
+      backdrop-filter:blur(8px);
+      border:1.5px solid rgba(255,255,255,.35);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      transition:background .3s,transform .3s,border-color .3s;
+    }
+    .vt-video:hover .vt-play-btn{
+      background:rgba(255,255,255,.25);
+      border-color:rgba(255,255,255,.7);
+      transform:scale(1.1);
+    }
+    .vt-play-btn svg{width:20px;height:20px;fill:white;margin-left:3px}
+    /* Video card bottom info */
+    .vt-video-info{
+      position:absolute;bottom:0;left:0;right:0;
+      padding:48px 18px 18px;
+      background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,0) 100%);
+      z-index:2;
+    }
+    .vt-video-name{font-size:14px;font-weight:600;color:white;margin-bottom:2px}
+    .vt-video-role{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.05em}
+    .vt-video-stars{display:flex;gap:2px;margin-top:6px}
+    .vt-video-stars span{color:#ffd700;font-size:11px}
+
+    /* ── TEXT REVIEW CARD ── */
+    .vt-text{
+      background:rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:28px 24px;
+      transition:background .3s,border-color .3s,transform .4s cubic-bezier(.23,1,.32,1);
+      transform-style:preserve-3d;
+      cursor:default;
+    }
+    .vt-text:hover{
+      background:rgba(255,255,255,.045);
+      border-color:rgba(255,255,255,.14);
+    }
+    .vt-text-top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .vt-avatar{
+      width:44px;height:44px;border-radius:50%;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;
+      flex-shrink:0;color:white;
+      overflow:hidden;
+    }
+    .vt-avatar img{width:100%;height:100%;object-fit:cover}
+    .vt-client-name{font-size:14px;font-weight:600;color:white;margin-bottom:2px}
+    .vt-client-role{font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.05em}
+    .vt-quote-mark{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:56px;line-height:.5;
+      color:rgba(255,255,255,.08);
+      display:block;margin-bottom:10px;
+    }
+    .vt-quote{
+      font-size:13.5px;color:rgba(255,255,255,.65);
+      line-height:1.8;margin-bottom:20px;
+    }
+    .vt-bottom{
+      display:flex;align-items:center;justify-content:space-between;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    .vt-rating{display:flex;align-items:center;gap:8px}
+    .vt-rating-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px}
+    .vt-stars{display:flex;gap:3px}
+    .vt-stars span{color:#ffd700;font-size:13px}
+    .vt-verified{
+      font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+      color:rgba(100,220,180,.7);
+      border:1px solid rgba(100,220,180,.2);
+      border-radius:100px;padding:3px 10px;
+    }
+
+    /* Video modal */
+    .vt-modal{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.92);
+      backdrop-filter:blur(16px);
+      z-index:700;
+      display:flex;align-items:center;justify-content:center;
+      padding:24px;
+      opacity:0;pointer-events:none;
+      transition:opacity .3s;
+    }
+    .vt-modal.open{opacity:1;pointer-events:all}
+    .vt-modal-inner{
+      position:relative;
+      width:100%;max-width:800px;
+      aspect-ratio:9/16;
+      max-height:85vh;
+      border-radius:20px;
+      overflow:hidden;
+      background:#000;
+    }
+    @media(min-width:600px){.vt-modal-inner{aspect-ratio:16/9;max-height:none}}
+    .vt-modal-inner iframe,.vt-modal-inner video{
+      width:100%;height:100%;border:none;display:block;
+    }
+    .vt-modal-close{
+      position:absolute;top:-48px;right:0;
+      width:36px;height:36px;
+      border:1px solid rgba(255,255,255,.25);border-radius:50%;
+      background:rgba(0,0,0,.5);
+      color:rgba(255,255,255,.8);font-size:18px;
+      display:flex;align-items:center;justify-content:center;
+      cursor:none;transition:all .2s;
+    }
+    .vt-modal-close:hover{border-color:white;color:white}
+
+    /* Empty state */
+    .vt-empty{
+      text-align:center;padding:80px 40px;
+      color:rgba(255,255,255,.2);font-size:14px;
+    }
+
+    @media(max-width:900px){.vt-bento{columns:2}}
     @media(max-width:768px){
       nav{padding:16px 20px}
       .nav-links{display:none}
@@ -249,6 +420,8 @@
       .footer-bottom{grid-template-columns:1fr}
       .fb-right{max-width:100%;justify-self:start}
       .pre-footer{padding:60px 20px 0}
+      .vt-bento{columns:1}
+      .vt-section-head p{text-align:left}
     }
   </style>
 </head>
@@ -344,13 +517,33 @@
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="section" id="testimonials">
+  <!-- TEXT TESTIMONIALS (existing) -->
+  <section class="section" id="testimonials" style="padding-bottom:0">
     <div class="section-label">Client Reviews</div>
-    <div class="testimonials-grid" id="testimonials-grid">
-      <!-- Loaded from API -->
+    <div class="testimonials-grid" id="testimonials-grid"></div>
+  </section>
+
+  <!-- VIDEO TESTIMONIALS — bento grid -->
+  <section class="section" id="video-testimonials" style="padding-top:48px">
+    <div class="vt-section-head">
+      <h2>Real<br><span>Client</span><br>Stories</h2>
+      <p>Watch what our clients say — real people, real results, real impact.</p>
+    </div>
+
+    <!-- Bento grid — populated by JS -->
+    <div class="vt-bento" id="vt-grid">
+      <!-- fallback while loading -->
+      <div class="vt-empty" id="vt-loading">Loading stories…</div>
     </div>
   </section>
+
+  <!-- VIDEO MODAL -->
+  <div class="vt-modal" id="vtModal" onclick="if(event.target===this)closeVTModal()">
+    <div class="vt-modal-inner" id="vtModalInner">
+      <button class="vt-modal-close" onclick="closeVTModal()">✕</button>
+      <div id="vtModalContent"></div>
+    </div>
+  </div>
 
   <!-- CONTACT -->
   <section class="section" id="contact">
@@ -563,6 +756,126 @@
       }
     }
     loadTestimonials();
+
+    // ── VIDEO TESTIMONIALS ──────────────────────────────────────
+    function ytThumb(url){
+      // Extract YouTube ID from various URL formats
+      const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);
+      return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
+    }
+
+    function buildVideoEmbed(url){
+      // YouTube
+      const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);
+      if(yt) return `<iframe src="https://www.youtube.com/embed/${yt[1]}?autoplay=1&rel=0" allowfullscreen allow="autoplay"></iframe>`;
+      // Direct video file
+      if(/\.(mp4|webm|mov)/i.test(url)) return `<video src="${url}" controls autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
+      // Generic iframe fallback
+      return `<iframe src="${url}" allowfullscreen></iframe>`;
+    }
+
+    function openVTModal(url){
+      document.getElementById('vtModalContent').innerHTML = buildVideoEmbed(url);
+      document.getElementById('vtModal').classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    function closeVTModal(){
+      document.getElementById('vtModal').classList.remove('open');
+      document.getElementById('vtModalContent').innerHTML='';
+      document.body.style.overflow='';
+    }
+
+    // Render a video card
+    function renderVideoCard(v, size=''){
+      const thumb = v.thumbnailUrl || ytThumb(v.videoUrl) || '';
+      const stars = '★'.repeat(v.rating||5);
+      return `
+        <div class="vt-item">
+          <div class="vt-video ${size}" onclick="openVTModal('${v.videoUrl}')">
+            ${thumb ? `<img class="vt-thumb" src="${thumb}" alt="${v.clientName}" loading="lazy"/>` : `<div style="width:100%;height:100%;background:rgba(255,255,255,.04)"></div>`}
+            <div class="vt-play"><div class="vt-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+            <div class="vt-video-info">
+              <div class="vt-video-name">${v.clientName}</div>
+              <div class="vt-video-role">${v.clientRole||''}</div>
+              <div class="vt-video-stars">${stars.split('').map(s=>`<span>${s}</span>`).join('')}</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // Render a text review card
+    function renderTextCard(v){
+      const initials = v.clientName.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      const stars = '★'.repeat(v.rating||5);
+      return `
+        <div class="vt-item">
+          <div class="vt-text">
+            <div class="vt-text-top">
+              <div class="vt-avatar">${initials}</div>
+              <div>
+                <div class="vt-client-name">${v.clientName}</div>
+                <div class="vt-client-role">${v.clientRole||''}</div>
+              </div>
+            </div>
+            <span class="vt-quote-mark">"</span>
+            <p class="vt-quote">${v.description||'Great experience working with Dreamify!'}</p>
+            <div class="vt-bottom">
+              <div class="vt-rating">
+                <span class="vt-rating-num">${(v.rating||5).toFixed(1)}</span>
+                <div class="vt-stars">${stars.split('').map(s=>`<span>${s}</span>`).join('')}</div>
+              </div>
+              <span class="vt-verified">✓ Verified</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    async function loadVideoTestimonials(){
+      const grid = document.getElementById('vt-grid');
+      try{
+        const res = await fetch(API+'/video-testimonials');
+        const data = await res.json();
+
+        if(!data.length){
+          // Fallback — show placeholder cards so the section isn't empty
+          grid.innerHTML = `
+            <div class="vt-item"><div class="vt-video tall" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center">
+              <div style="text-align:center;color:rgba(255,255,255,.2);font-size:13px;padding:24px">Add video<br>testimonials<br>from admin panel</div>
+            </div></div>`;
+          return;
+        }
+
+        // Build bento layout:
+        // Pattern repeats: big-video, text, video, text, video, text...
+        // Odd-indexed videos get class "tall", even "square" for variety
+        let html = '';
+        data.forEach((v, i) => {
+          const isVideo = !!v.videoUrl;
+          if(isVideo){
+            const sizeClass = i === 0 ? 'tall' : (i % 3 === 0 ? 'tall' : 'square');
+            html += renderVideoCard(v, sizeClass);
+          } else {
+            html += renderTextCard(v);
+          }
+        });
+        grid.innerHTML = html;
+
+        // Scroll reveal
+        grid.querySelectorAll('.vt-item').forEach((el,i)=>{
+          el.style.opacity='0';
+          el.style.transform='translateY(28px)';
+          el.style.transition=`opacity .6s ${i*0.06}s ease, transform .6s ${i*0.06}s ease`;
+          obs.observe(el);
+        });
+
+      }catch(e){
+        console.warn('Video testimonials API not available');
+        grid.innerHTML='';
+      }
+    }
+    loadVideoTestimonials();
+
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeVTModal();});
   </script>
 </body>
 </html>
