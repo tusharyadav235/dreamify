@@ -6,6 +6,7 @@
   <title>Dreamify — Websites. Apps. Cloud.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -203,6 +204,11 @@
     .footer-base-copy{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.1em;text-align:center}
 
     /* COOKIE BANNER */
+    .cookie-title i {
+    color: #f4a261;
+    margin-right: 8px;
+    font-size: 20px; 
+          }
     .cookie-banner{position:fixed;bottom:28px;left:28px;z-index:500;background:rgba(18,18,18,.96);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:24px 28px;max-width:380px;display:none}
     .cookie-banner.show{display:block;animation:fadeUp .5s forwards}
     .cookie-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
@@ -458,7 +464,6 @@
       <a href="#contact" class="btn-primary">Start Your Project <span>↗</span></a>
       <a href="#services" class="btn-secondary">Explore Services →</a>
     </div>
-    <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
   </section>
 
   <!-- MARQUEE -->
@@ -512,7 +517,7 @@
         <div class="sc-title">Cloud Infra</div>
         <div class="sc-desc">Scalable infrastructure on AWS, GCP & Azure. CI/CD pipelines, serverless architecture, and 99.9% uptime SLAs.</div>
         <ul class="sc-features"><li>Multi-cloud architecture & DevOps</li><li>Kubernetes & container orchestration</li><li>CI/CD pipeline automation</li><li>Security, monitoring & auto-scaling</li></ul>
-        <div class="sc-tags"><span class="sc-tag">AWS</span><span class="sc-tag">GCP</span><span class="sc-tag">Docker</span><span class="sc-tag">Terraform</span></div>
+        <div class="sc-tags"><span class="sc-tag">AWS</span><span class="sc-tag">GCP</span><span class="sc-tag">Docker</span><span class="sc-tag">Terraform</span><span class="sc-tag">Kubernetes</span></div>
       </div>
     </div>
   </section>
@@ -654,7 +659,9 @@
 
   <!-- COOKIE BANNER -->
   <div class="cookie-banner show" id="cookieBanner">
-    <div class="cookie-title">🍪 Cookie Preferences</div>
+    <div class="cookie-title">
+    <i class="fa-solid fa-cookie-bite"></i> Cookie Preferences
+</div>
     <p class="cookie-text">We use cookies to enhance your experience. Read our <a href="#" onclick="openModal('cookie');return false">Cookie Policy</a> and <a href="#" onclick="openModal('privacy');return false">Privacy Policy</a>.</p>
     <div class="cookie-btns">
       <button class="cookie-accept" onclick="document.getElementById('cookieBanner').style.display='none'">Accept All</button>
