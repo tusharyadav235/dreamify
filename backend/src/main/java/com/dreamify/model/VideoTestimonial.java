@@ -17,24 +17,32 @@ public class VideoTestimonial {
     @NotBlank
     private String clientName;
 
-    private String clientRole;      // e.g. "CEO - Bloom Journal"
+    private String clientRole;
 
-    private String clientCompany;
+    // "YOUTUBE" or "UPLOAD"
+    @Column(nullable = false)
+    private String videoType = "YOUTUBE";
 
-    // YouTube / Vimeo embed URL  OR  direct MP4 link
+    // YouTube: raw URL. Upload: full public URL to the file
     @NotBlank
     @Column(nullable = false)
     private String videoUrl;
 
-    // Optional thumbnail override (if empty, we use YouTube auto-thumb)
+    // YouTube video ID extracted from URL (null for uploaded videos)
+    private String youtubeVideoId;
+
+    // Thumbnail URL (auto from YouTube or custom uploaded)
     private String thumbnailUrl;
 
+    // Original filename — stored for UPLOAD type only
+    private String originalFilename;
+
     @Column(columnDefinition = "TEXT")
-    private String description;     // short caption shown on hover / mobile
+    private String description;
 
-    private int rating = 5;         // 1-5 stars
+    private int rating = 5;
 
-    private boolean active = true;  // admin can hide without deleting
+    private boolean active = true;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

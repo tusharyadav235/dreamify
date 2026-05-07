@@ -367,57 +367,146 @@
       <!-- ─── VIDEO REVIEWS PAGE ──────────────────── -->
       <div class="page" id="page-video-reviews">
 
-        <!-- Add form -->
-        <div class="add-form">
-          <div class="add-form-title">▶ Add Video Testimonial</div>
+        <!-- TAB SWITCHER -->
+        <div style="display:flex;gap:0;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;width:fit-content">
+          <button id="tab-yt" onclick="switchVTab('yt')"
+            style="padding:12px 24px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:white;color:black">
+            ▶ YouTube Link
+          </button>
+          <button id="tab-up" onclick="switchVTab('up')"
+            style="padding:12px 24px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.45)">
+            ⬆ Upload from Laptop
+          </button>
+        </div>
+
+        <!-- ── PANEL A: YouTube ─────────────────── -->
+        <div id="vt-panel-yt" class="add-form" style="margin-bottom:24px">
+          <div class="add-form-title">▶ Add YouTube Video</div>
+          <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:20px;line-height:1.6">
+            Video will only play <strong style="color:rgba(255,255,255,.6)">embedded on your website</strong> — visitors cannot open YouTube directly. Thumbnail is auto-extracted.
+          </p>
           <div class="form-row-admin">
-            <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="vt-name" placeholder="Matthew West"/></div>
-            <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="vt-role" placeholder="CEO - Bloom Journal"/></div>
+            <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="yt-name" placeholder="Matthew West"/></div>
+            <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="yt-role" placeholder="CEO, Bloom Journal"/></div>
             <div class="form-group-admin"><label class="admin-label">Rating</label>
-              <div class="star-picker" id="vtStarPicker">
-                <button class="star-btn on" onclick="setVTStars(1)">★</button>
-                <button class="star-btn on" onclick="setVTStars(2)">★</button>
-                <button class="star-btn on" onclick="setVTStars(3)">★</button>
-                <button class="star-btn on" onclick="setVTStars(4)">★</button>
-                <button class="star-btn on" onclick="setVTStars(5)">★</button>
+              <div class="star-picker" id="ytStarPicker">
+                <button class="star-btn on" onclick="setYTStars(1)">★</button>
+                <button class="star-btn on" onclick="setYTStars(2)">★</button>
+                <button class="star-btn on" onclick="setYTStars(3)">★</button>
+                <button class="star-btn on" onclick="setYTStars(4)">★</button>
+                <button class="star-btn on" onclick="setYTStars(5)">★</button>
               </div>
             </div>
           </div>
           <div class="form-group-admin" style="margin-bottom:14px">
-            <label class="admin-label">Video URL * (YouTube, Vimeo, or direct MP4)</label>
-            <input class="admin-input" id="vt-url" placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."/>
+            <label class="admin-label">YouTube URL *</label>
+            <input class="admin-input" id="yt-url" placeholder="https://youtu.be/... or https://youtube.com/watch?v=..."
+              oninput="autoPreviewYT()"/>
           </div>
-          <div class="form-row-admin" style="grid-template-columns:1fr 1fr">
-            <div class="form-group-admin">
-              <label class="admin-label">Thumbnail URL (optional — auto from YouTube)</label>
-              <input class="admin-input" id="vt-thumb" placeholder="https://... (leave blank for YouTube auto-thumb)"/>
+          <div class="form-group-admin" style="margin-bottom:18px">
+            <label class="admin-label">Short Description</label>
+            <input class="admin-input" id="yt-desc" placeholder="Amazing work, delivered on time!"/>
+          </div>
+          <!-- Auto thumbnail preview -->
+          <div id="yt-preview" style="display:none;margin-bottom:18px;padding:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px">
+            <label class="admin-label" style="margin-bottom:8px">Auto Thumbnail Preview</label>
+            <div style="display:flex;align-items:center;gap:14px">
+              <img id="yt-preview-img" src="" alt="thumb"
+                style="width:140px;height:90px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.12)"/>
+              <div>
+                <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:4px" id="yt-preview-id">—</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.3)">Embed-only mode active ✓</div>
+              </div>
             </div>
-            <div class="form-group-admin">
-              <label class="admin-label">Short Description (shown as caption)</label>
-              <input class="admin-input" id="vt-desc" placeholder="Amazing delivery, 5 stars!"/>
-            </div>
           </div>
-          <!-- Preview row -->
-          <div id="vt-preview" style="display:none;margin-bottom:18px">
-            <label class="admin-label">Thumbnail Preview</label>
-            <img id="vt-preview-img" src="" alt="thumb"
-              style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.1);margin-top:6px"/>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn-add" onclick="addVideoTesti()">Add Video ▶</button>
-            <button class="action-btn" onclick="previewVTThumb()">Preview Thumbnail</button>
-          </div>
+          <button class="btn-add" onclick="addYTVideo()">Add YouTube Video ▶</button>
         </div>
 
-        <!-- Table -->
+        <!-- ── PANEL B: Upload ──────────────────── -->
+        <div id="vt-panel-up" class="add-form" style="margin-bottom:24px;display:none">
+          <div class="add-form-title">⬆ Upload Video from Laptop</div>
+          <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:20px;line-height:1.6">
+            Video is stored on <strong style="color:rgba(255,255,255,.6)">your EC2 server</strong> and served from your domain. Supports MP4, MOV, WebM up to 500MB.
+          </p>
+          <div class="form-row-admin">
+            <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="up-name" placeholder="Anurag Bezboruah"/></div>
+            <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="up-role" placeholder="CEO, Finixa Dedeons"/></div>
+            <div class="form-group-admin"><label class="admin-label">Rating</label>
+              <div class="star-picker" id="upStarPicker">
+                <button class="star-btn on" onclick="setUPStars(1)">★</button>
+                <button class="star-btn on" onclick="setUPStars(2)">★</button>
+                <button class="star-btn on" onclick="setUPStars(3)">★</button>
+                <button class="star-btn on" onclick="setUPStars(4)">★</button>
+                <button class="star-btn on" onclick="setUPStars(5)">★</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group-admin" style="margin-bottom:14px">
+            <label class="admin-label">Short Description</label>
+            <input class="admin-input" id="up-desc" placeholder="Absolute win for my team!"/>
+          </div>
+
+          <!-- Video file drop zone -->
+          <div class="form-group-admin" style="margin-bottom:14px">
+            <label class="admin-label">Video File * (MP4, MOV, WebM — max 500MB)</label>
+            <div id="up-dropzone"
+              style="border:2px dashed rgba(255,255,255,.15);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:border-color .3s;background:rgba(255,255,255,.02)"
+              onclick="document.getElementById('up-file').click()"
+              ondragover="event.preventDefault();this.style.borderColor='rgba(255,255,255,.4)'"
+              ondragleave="this.style.borderColor='rgba(255,255,255,.15)'"
+              ondrop="handleFileDrop(event)">
+              <div style="font-size:28px;margin-bottom:10px">📁</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.5)">Drop video here or <span style="color:white;text-decoration:underline">click to browse</span></div>
+              <div id="up-file-name" style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.35)">No file selected</div>
+            </div>
+            <input type="file" id="up-file" accept="video/*" style="display:none" onchange="onVideoFileSelect(this)"/>
+          </div>
+
+          <!-- Thumbnail file (optional) -->
+          <div class="form-group-admin" style="margin-bottom:14px">
+            <label class="admin-label">Custom Thumbnail Image (optional — JPG/PNG)</label>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <button class="action-btn" onclick="document.getElementById('up-thumb-file').click()">
+                Choose Thumbnail
+              </button>
+              <input type="file" id="up-thumb-file" accept="image/*" style="display:none" onchange="onThumbFileSelect(this)"/>
+              <span id="up-thumb-name" style="font-size:12px;color:rgba(255,255,255,.35)">No thumbnail selected</span>
+            </div>
+            <!-- Thumbnail preview -->
+            <div id="up-thumb-preview" style="display:none;margin-top:10px">
+              <img id="up-thumb-img" src="" alt="thumb"
+                style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.12)"/>
+            </div>
+          </div>
+
+          <!-- Upload progress bar -->
+          <div id="up-progress-wrap" style="display:none;margin-bottom:18px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:11px;color:rgba(255,255,255,.4)">Uploading...</span>
+              <span id="up-pct" style="font-size:11px;color:rgba(255,255,255,.4)">0%</span>
+            </div>
+            <div style="background:rgba(255,255,255,.08);border-radius:100px;height:6px;overflow:hidden">
+              <div id="up-bar" style="height:6px;background:white;border-radius:100px;width:0;transition:width .3s"></div>
+            </div>
+          </div>
+
+          <button class="btn-add" id="up-submit-btn" onclick="addUploadVideo()">Upload & Save ⬆</button>
+        </div>
+
+        <!-- ── VIDEO LIST TABLE ──────────────────── -->
         <div class="table-wrap">
           <div class="table-header">
             <div class="table-title">All Video Testimonials</div>
-            <div style="font-size:12px;color:var(--gray)">Toggle active/hidden or delete</div>
+            <div style="font-size:12px;color:var(--gray)">Click Toggle to show/hide on website</div>
           </div>
           <table class="desk-table">
-            <thead><tr><th>Client</th><th>Role</th><th>Rating</th><th>Video URL</th><th>Status</th><th></th></tr></thead>
-            <tbody id="vt-body-desk"></tbody>
+            <thead><tr>
+              <th>Thumbnail</th><th>Client</th><th>Type</th>
+              <th>Rating</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="vt-body-desk">
+              <tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading…</td></tr>
+            </tbody>
           </table>
           <div class="mob-list" id="vt-body-mob"></div>
         </div>
@@ -706,28 +795,200 @@ async function delTesti(id){
   catch(e){toast('Failed',false);}
 }
 
-/* ── VIDEO TESTIMONIALS ─────────────────────────────── */
-let vtStars = 5;
-let allVT   = [];
+/* ── VIDEO TESTIMONIALS ─────────────────────────────────────── */
+let ytStars = 5, upStars = 5;
+let allVT = [];
+let selectedVideoFile = null, selectedThumbFile = null;
 
+/* Tab switcher */
+function switchVTab(tab){
+  const isYT = tab === 'yt';
+  document.getElementById('vt-panel-yt').style.display = isYT ? 'block' : 'none';
+  document.getElementById('vt-panel-up').style.display = isYT ? 'none'  : 'block';
+  const ytBtn = document.getElementById('tab-yt');
+  const upBtn = document.getElementById('tab-up');
+  ytBtn.style.background = isYT ? 'white' : 'transparent';
+  ytBtn.style.color       = isYT ? 'black' : 'rgba(255,255,255,.45)';
+  upBtn.style.background  = isYT ? 'transparent' : 'white';
+  upBtn.style.color       = isYT ? 'rgba(255,255,255,.45)' : 'black';
+}
+
+/* Star pickers */
+function setYTStars(n){ ytStars=n; document.querySelectorAll('#ytStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n)); }
+function setUPStars(n){ upStars=n; document.querySelectorAll('#upStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n)); }
+
+/* Extract YouTube ID from any YouTube URL format */
+function extractYTId(url){
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+/* Auto-preview thumbnail as user types YouTube URL */
+function autoPreviewYT(){
+  const url = document.getElementById('yt-url').value.trim();
+  const id  = extractYTId(url);
+  if(!id){
+    document.getElementById('yt-preview').style.display = 'none';
+    return;
+  }
+  document.getElementById('yt-preview-img').src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  document.getElementById('yt-preview-id').textContent  = `Video ID: ${id}`;
+  document.getElementById('yt-preview').style.display   = 'block';
+}
+
+/* ── ADD YOUTUBE VIDEO ── */
+async function addYTVideo(){
+  const name = document.getElementById('yt-name').value.trim();
+  const role = document.getElementById('yt-role').value.trim();
+  const url  = document.getElementById('yt-url').value.trim();
+  const desc = document.getElementById('yt-desc').value.trim();
+  if(!name){ toast('Client name required', false); return; }
+  if(!url){  toast('YouTube URL required', false);  return; }
+  if(!extractYTId(url)){ toast('Invalid YouTube URL — paste a youtu.be or youtube.com link', false); return; }
+  try{
+    const res = await fetch(API+'/video-testimonials',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ clientName:name, clientRole:role, videoUrl:url, description:desc, rating:ytStars, active:true })
+    });
+    if(res.ok){
+      ['yt-name','yt-role','yt-url','yt-desc'].forEach(id=>{ document.getElementById(id).value=''; });
+      document.getElementById('yt-preview').style.display='none';
+      setYTStars(5);
+      toast('YouTube video added ▶');
+      loadVideoTestis();
+    } else { toast('Server error: '+(await res.text()), false); }
+  }catch(e){ toast('Could not reach server', false); }
+}
+
+/* ── FILE SELECTION ── */
+function onVideoFileSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('video/')){
+    toast('Please select a video file (MP4, MOV, WebM)', false);
+    input.value=''; return;
+  }
+  if(file.size > 500 * 1024 * 1024){
+    toast('File too large — max 500 MB', false);
+    input.value=''; return;
+  }
+  selectedVideoFile = file;
+  document.getElementById('up-file-name').textContent =
+    `${file.name}  (${(file.size/1024/1024).toFixed(1)} MB)`;
+  document.getElementById('up-dropzone').style.borderColor = 'rgba(255,255,255,.4)';
+}
+
+function handleFileDrop(e){
+  e.preventDefault();
+  document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.15)';
+  const file = e.dataTransfer.files[0];
+  if(!file) return;
+  // Feed into same handler
+  const dt = new DataTransfer(); dt.items.add(file);
+  const inp = document.getElementById('up-file');
+  inp.files = dt.files;
+  onVideoFileSelect(inp);
+}
+
+function onThumbFileSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){
+    toast('Please select an image file', false); input.value=''; return;
+  }
+  selectedThumbFile = file;
+  document.getElementById('up-thumb-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('up-thumb-img').src = e.target.result;
+    document.getElementById('up-thumb-preview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── UPLOAD VIDEO FROM LAPTOP ── */
+async function addUploadVideo(){
+  const name = document.getElementById('up-name').value.trim();
+  const role = document.getElementById('up-role').value.trim();
+  const desc = document.getElementById('up-desc').value.trim();
+  if(!name){           toast('Client name required', false); return; }
+  if(!selectedVideoFile){ toast('Please select a video file', false); return; }
+
+  const formData = new FormData();
+  formData.append('file',       selectedVideoFile);
+  formData.append('clientName', name);
+  formData.append('clientRole', role || '');
+  formData.append('description',desc || '');
+  formData.append('rating',     String(upStars));
+  if(selectedThumbFile) formData.append('thumbnailFile', selectedThumbFile);
+
+  // Show progress bar
+  document.getElementById('up-progress-wrap').style.display = 'block';
+  const btn = document.getElementById('up-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+
+  try{
+    await uploadWithProgress(
+      API+'/video-testimonials/upload',
+      formData,
+      pct => {
+        document.getElementById('up-bar').style.width = pct+'%';
+        document.getElementById('up-pct').textContent  = pct+'%';
+      }
+    );
+    // Clear form
+    ['up-name','up-role','up-desc'].forEach(id=>{ document.getElementById(id).value=''; });
+    document.getElementById('up-file').value='';
+    document.getElementById('up-thumb-file').value='';
+    document.getElementById('up-file-name').textContent = 'No file selected';
+    document.getElementById('up-thumb-name').textContent = 'No thumbnail selected';
+    document.getElementById('up-thumb-preview').style.display='none';
+    document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.15)';
+    document.getElementById('up-progress-wrap').style.display='none';
+    document.getElementById('up-bar').style.width='0';
+    selectedVideoFile = null; selectedThumbFile = null;
+    setUPStars(5);
+    toast('Video uploaded & saved ✓');
+    loadVideoTestis();
+  }catch(err){
+    toast('Upload failed: '+err.message, false);
+    document.getElementById('up-progress-wrap').style.display='none';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Upload & Save ⬆';
+  }
+}
+
+/* XHR-based upload so we can track progress % */
+function uploadWithProgress(url, formData, onProgress){
+  return new Promise((resolve, reject)=>{
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.upload.addEventListener('progress', e=>{
+      if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100));
+    });
+    xhr.addEventListener('load', ()=>{
+      if(xhr.status >= 200 && xhr.status < 300) resolve(JSON.parse(xhr.responseText));
+      else reject(new Error(`HTTP ${xhr.status}: ${xhr.responseText}`));
+    });
+    xhr.addEventListener('error', ()=>reject(new Error('Network error')));
+    xhr.send(formData);
+  });
+}
+
+/* ── LOAD & RENDER VIDEO LIST ── */
 async function loadVideoTestis(){
   try{
     const r = await fetch(API+'/video-testimonials/all');
     allVT = await r.json();
     drawVTDesk(allVT);
     drawVTMob(allVT);
-    // Update dashboard stat if element exists
-    const el = document.getElementById('d-vt');
-    if(el) el.textContent = allVT.filter(v=>v.active).length;
   }catch(e){
     const b = document.getElementById('vt-body-desk');
-    if(b) b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load</div></td></tr>';
+    if(b) b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load video testimonials</div></td></tr>';
   }
-}
-
-function ytThumbAdmin(url){
-  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);
-  return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
 }
 
 function drawVTDesk(rows){
@@ -737,23 +998,25 @@ function drawVTDesk(rows){
     return;
   }
   b.innerHTML = rows.map(v=>{
-    const thumb = v.thumbnailUrl || ytThumbAdmin(v.videoUrl) || '';
-    const shortUrl = v.videoUrl.length > 40 ? v.videoUrl.substring(0,40)+'…' : v.videoUrl;
+    const thumb = v.thumbnailUrl || '';
+    const typeBadge = v.videoType === 'UPLOAD'
+      ? '<span class="badge badge-web">⬆ Uploaded</span>'
+      : '<span class="badge badge-mobile">▶ YouTube</span>';
     const statusBadge = v.active
       ? '<span class="badge badge-completed">● Live</span>'
       : '<span class="badge badge-contacted">● Hidden</span>';
     return `<tr>
-      <td>
-        <div style="display:flex;align-items:center;gap:10px">
-          ${thumb
-            ? `<img src="${thumb}" style="width:52px;height:36px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`
-            : `<div style="width:52px;height:36px;background:rgba(255,255,255,.05);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">▶</div>`}
-          <strong>${v.clientName}</strong>
-        </div>
+      <td style="width:80px">
+        ${thumb
+          ? `<img src="${thumb}" style="width:64px;height:44px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08)"/>`
+          : `<div style="width:64px;height:44px;background:rgba(255,255,255,.05);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">▶</div>`}
       </td>
-      <td style="font-size:12px;color:var(--gray)">${v.clientRole||'—'}</td>
-      <td style="color:#ffd700">${'★'.repeat(v.rating||5)}</td>
-      <td style="font-size:11px;color:rgba(255,255,255,.4);max-width:180px;word-break:break-all">${shortUrl}</td>
+      <td>
+        <strong style="display:block">${v.clientName}</strong>
+        <span style="font-size:11px;color:var(--gray)">${v.clientRole||''}</span>
+      </td>
+      <td>${typeBadge}</td>
+      <td style="color:#ffd700;font-size:15px">${'★'.repeat(v.rating||5)}</td>
       <td>${statusBadge}</td>
       <td>
         <div style="display:flex;gap:6px">
@@ -772,33 +1035,27 @@ function drawVTMob(rows){
     return;
   }
   b.innerHTML = rows.map(v=>{
-    const thumb = v.thumbnailUrl || ytThumbAdmin(v.videoUrl) || '';
+    const thumb = v.thumbnailUrl || '';
+    const typeLabel = v.videoType==='UPLOAD' ? '⬆ Uploaded' : '▶ YouTube';
     return `<div class="mob-card">
       <div class="mob-card-head">
         <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
           ${thumb
-            ? `<img src="${thumb}" style="width:56px;height:40px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`
-            : `<div style="width:56px;height:40px;background:rgba(255,255,255,.05);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center">▶</div>`}
+            ? `<img src="${thumb}" style="width:60px;height:42px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`
+            : `<div style="width:60px;height:42px;background:rgba(255,255,255,.05);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">▶</div>`}
           <div style="min-width:0">
             <div class="mob-card-name">${v.clientName}</div>
-            <div class="mob-card-sub">${v.clientRole||'—'}</div>
+            <div class="mob-card-sub">${v.clientRole||'—'} · ${typeLabel}</div>
           </div>
         </div>
         ${v.active
           ? '<span class="badge badge-completed" style="flex-shrink:0">Live</span>'
           : '<span class="badge badge-contacted" style="flex-shrink:0">Hidden</span>'}
       </div>
-      <div class="mob-card-grid" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
-        <div class="mob-field">
-          <div class="mob-field-lbl">Rating</div>
-          <div class="mob-field-val" style="color:#ffd700">${'★'.repeat(v.rating||5)}</div>
-        </div>
-        <div class="mob-field">
-          <div class="mob-field-lbl">Description</div>
-          <div class="mob-field-val">${(v.description||'—').substring(0,30)}</div>
-        </div>
+      <div class="mob-card-grid" style="margin-bottom:12px">
+        <div class="mob-field"><div class="mob-field-lbl">Rating</div><div class="mob-field-val" style="color:#ffd700">${'★'.repeat(v.rating||5)}</div></div>
+        <div class="mob-field"><div class="mob-field-lbl">Type</div><div class="mob-field-val">${typeLabel}</div></div>
       </div>
-      <div style="font-size:10px;color:rgba(255,255,255,.25);word-break:break-all;margin-bottom:12px">${v.videoUrl.substring(0,60)}…</div>
       <div class="mob-card-actions">
         <button class="action-btn" style="flex:1" onclick="toggleVT(${v.id})">${v.active?'Hide from site':'Show on site'}</button>
         <button class="action-btn danger" onclick="delVT(${v.id})">Delete</button>
@@ -807,77 +1064,16 @@ function drawVTMob(rows){
   }).join('');
 }
 
-function setVTStars(n){
-  vtStars = n;
-  document.querySelectorAll('#vtStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));
-}
-
-function previewVTThumb(){
-  const url = document.getElementById('vt-url').value.trim();
-  if(!url){ toast('Enter a video URL first',false); return; }
-  const manualThumb = document.getElementById('vt-thumb').value.trim();
-  const thumb = manualThumb || ytThumbAdmin(url);
-  if(!thumb){ toast('No thumbnail available for this URL. Paste one manually.',false); return; }
-  document.getElementById('vt-preview-img').src = thumb;
-  document.getElementById('vt-preview').style.display = 'block';
-  toast('Thumbnail loaded ✓');
-}
-
-async function addVideoTesti(){
-  const name  = document.getElementById('vt-name').value.trim();
-  const role  = document.getElementById('vt-role').value.trim();
-  const url   = document.getElementById('vt-url').value.trim();
-  const thumb = document.getElementById('vt-thumb').value.trim();
-  const desc  = document.getElementById('vt-desc').value.trim();
-
-  if(!name){ toast('Client name is required',false); return; }
-  if(!url){  toast('Video URL is required',false);   return; }
-
-  // Auto-fill thumbnail from YouTube if not provided
-  const autoThumb = thumb || ytThumbAdmin(url) || '';
-
-  try{
-    const res = await fetch(API+'/video-testimonials',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        clientName: name,
-        clientRole: role,
-        videoUrl: url,
-        thumbnailUrl: autoThumb,
-        description: desc,
-        rating: vtStars,
-        active: true
-      })
-    });
-    if(res.ok){
-      // Clear form
-      ['vt-name','vt-role','vt-url','vt-thumb','vt-desc'].forEach(id=>{
-        document.getElementById(id).value='';
-      });
-      setVTStars(5);
-      document.getElementById('vt-preview').style.display='none';
-      toast('Video testimonial added ▶');
-      loadVideoTestis();
-    } else {
-      const err = await res.text();
-      toast('Failed: '+err, false);
-    }
-  }catch(e){
-    toast('Could not connect to server',false);
-  }
-}
-
 async function toggleVT(id){
   try{
     await fetch(API+'/video-testimonials/'+id+'/toggle',{method:'PATCH'});
-    toast('Visibility updated');
+    toast('Visibility updated ✓');
     loadVideoTestis();
-  }catch(e){ toast('Failed',false); }
+  }catch(e){ toast('Failed to update',false); }
 }
 
 async function delVT(id){
-  if(!confirm('Delete this video testimonial?')) return;
+  if(!confirm('Delete this video? This cannot be undone.')) return;
   try{
     await fetch(API+'/video-testimonials/'+id,{method:'DELETE'});
     toast('Video deleted');

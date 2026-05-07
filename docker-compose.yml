@@ -38,8 +38,17 @@ services:
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
-      # Memory management is key for 1GB RAM EC2
+      # Upload storage — path inside the container
+      UPLOAD_DIR: /app/uploads
+      # Public base URL used to build video/thumbnail URLs returned to frontend
+      # Must match your domain so nginx can proxy /uploads/ correctly
+      APP_DOMAIN: ${APP_DOMAIN:-https://dreamify.info}
+      # Memory management for 1GB RAM EC2
       JAVA_OPTS: "-Xmx300m -Xms200m"
+    volumes:
+      # Named volume — persists uploaded videos across image updates and restarts
+      # docker compose down does NOT delete this volume
+      - uploads_data:/app/uploads
     networks:
       - dreamify-net
     depends_on:
@@ -73,7 +82,6 @@ services:
     image: ghcr.io/tusharyadav235/dreamify-admin:latest
     container_name: dreamify-admin
     restart: unless-stopped
-    # ❌ VOLUME REMOVED: This forces Docker to use the fresh GHCR image code
     networks:
       - dreamify-net
     deploy:
@@ -105,6 +113,7 @@ services:
 
 volumes:
   mysql_data:
+  uploads_data:   # ← persists uploaded videos/thumbnails across all deploys
 
 networks:
   dreamify-net:
