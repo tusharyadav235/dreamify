@@ -84,6 +84,11 @@ services:
     restart: unless-stopped
     networks:
       - dreamify-net
+
+    depends_on:
+      backend:
+         condition: service_healthy   
+         
     deploy:
       resources:
         limits:
