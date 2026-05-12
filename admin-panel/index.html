@@ -16,13 +16,14 @@
     .login-wrap.hidden{opacity:0;pointer-events:none}
     .login-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;width:100%;max-width:420px}
     .login-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-    .login-sub{font-size:12px;color:var(--gray);letter-spacing:.1em;margin-bottom:32px}
+    .login-sub{font-size:12px;color:var(--gray);letter-spacing:.1em;margin-bottom:6px}
+    .login-setup-notice{font-size:12px;color:rgba(255,208,128,.8);background:rgba(255,208,128,.08);border:1px solid rgba(255,208,128,.2);border-radius:8px;padding:10px 14px;margin-bottom:24px;line-height:1.6;display:none}
     .login-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px;display:block}
     .login-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:white;font-family:'Barlow',sans-serif;font-size:16px;outline:none;margin-bottom:16px;transition:border-color .3s}
     .login-input:focus{border-color:rgba(255,255,255,.3)}
     .login-btn{width:100%;background:white;color:black;border:none;border-radius:10px;padding:16px;font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-top:8px}
     .login-btn:active{background:#e0e0e0}
-    .login-error{font-size:12px;color:#ff6b6b;margin-bottom:16px;display:none}
+    .login-error{font-size:12px;color:#ff6b6b;margin-bottom:16px;padding:10px 14px;background:rgba(255,100,100,.08);border:1px solid rgba(255,100,100,.2);border-radius:8px;display:none}
 
     /* ── LAYOUT ── */
     .layout{display:flex;width:100%;min-height:100vh}
@@ -60,7 +61,8 @@
     .topbar-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
     .topbar-right{display:flex;align-items:center;gap:10px}
     .topbar-admin{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray)}
-    .topbar-avatar{width:32px;height:32px;background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px}
+    .topbar-avatar{width:32px;height:32px;background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:border-color .2s}
+    .topbar-avatar:hover{border-color:rgba(255,255,255,.3)}
     .admin-name{display:block}
 
     /* ── CONTENT ── */
@@ -126,7 +128,7 @@
     .empty-state{text-align:center;padding:60px 24px;color:rgba(255,255,255,.2);font-size:14px}
     .empty-icon{font-size:36px;margin-bottom:14px;opacity:.5}
 
-    /* ── TESTIMONIAL FORM ── */
+    /* ── FORM ELEMENTS ── */
     .add-form{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:24px}
     .add-form-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px}
     .form-row-admin{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
@@ -143,8 +145,29 @@
     .star-btn:active{transform:scale(1.25)}
     .btn-add{background:white;color:black;border:none;border-radius:10px;padding:14px 28px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
     .btn-add:active{background:#e0e0e0}
+    .btn-danger{background:transparent;color:#ff6b6b;border:1px solid rgba(255,100,100,.3);border-radius:10px;padding:14px 28px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+    .btn-danger:hover{background:rgba(255,100,100,.08);border-color:rgba(255,100,100,.5)}
 
-    /* ── DETAIL MODAL (bottom sheet on mobile) ── */
+    /* ── PASSWORD STRENGTH BAR ── */
+    .pw-strength-wrap{margin-top:8px;display:none}
+    .pw-strength-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:4px}
+    .pw-strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0}
+    .pw-strength-label{font-size:10px;letter-spacing:.1em}
+
+    /* ── SECURITY SETTINGS CARD ── */
+    .security-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px}
+    .security-card-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+    .security-card-sub{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:22px;line-height:1.6}
+    .input-with-eye{position:relative}
+    .input-with-eye .admin-input{padding-right:44px}
+    .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;padding:4px;transition:color .2s}
+    .eye-btn:hover{color:rgba(255,255,255,.7)}
+    .eye-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    .session-info{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+    .session-info-label{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase}
+    .session-info-value{font-size:13px;color:rgba(255,255,255,.75)}
+
+    /* ── DETAIL MODAL (bottom sheet) ── */
     .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
     .detail-overlay.open{opacity:1;pointer-events:all}
     .detail-box{background:#0e0e0e;border:1px solid rgba(255,255,255,.1);border-radius:24px 24px 0 0;width:100%;max-width:640px;padding:12px 28px 40px;transform:translateY(40px);transition:transform .35s cubic-bezier(.23,1,.32,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -167,10 +190,10 @@
     /* ── BOTTOM NAV (mobile only) ── */
     .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,8,.97);border-top:1px solid var(--border);backdrop-filter:blur(20px);z-index:50;padding-bottom:env(safe-area-inset-bottom,0)}
     .bnav-inner{display:flex;justify-content:space-around;align-items:center}
-    .bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 16px;border-radius:10px;color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;min-width:64px;transition:color .2s;-webkit-tap-highlight-color:transparent;position:relative}
-    .bnav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1px}
+    .bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;min-width:56px;transition:color .2s;-webkit-tap-highlight-color:transparent;position:relative}
+    .bnav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1px}
     .bnav-btn.active{color:white}
-    .bnav-dot{position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:#ff4444;display:none}
+    .bnav-dot{position:absolute;top:8px;right:10px;width:7px;height:7px;border-radius:50%;background:#ff4444;display:none}
 
     /* ── TOAST ── */
     .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);z-index:800;background:#0e0e0e;border:1px solid rgba(100,220,180,.3);border-radius:12px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:10px;white-space:nowrap;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
@@ -183,7 +206,6 @@
       .form-row-admin{grid-template-columns:1fr 1fr}
       .search-input{width:150px}
     }
-
     @media(max-width:768px){
       .sidebar{transform:translateX(-100%)}
       .sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.6)}
@@ -197,21 +219,16 @@
       .stat-card{padding:16px 14px;border-radius:12px}
       .stat-card-num{font-size:28px}
       .stat-card-label{font-size:9px;margin-bottom:8px}
-      /* Hide desktop table, show mobile cards */
       .desk-table{display:none}
       .mob-list{display:flex}
-      /* Form */
       .form-row-admin{grid-template-columns:1fr}
       .add-form{padding:20px}
-      /* Table header wraps */
       .table-header{flex-direction:column;align-items:flex-start}
       .table-actions{width:100%}
       .search-input{width:100%}
       .filter-select{width:100%}
-      /* Bottom nav */
       .bottom-nav{display:block}
     }
-
     @media(max-width:400px){
       .stats-cards{grid-template-columns:1fr 1fr}
       .detail-grid{grid-template-columns:1fr}
@@ -221,26 +238,32 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ═══ LOGIN ══════════════════════════════════════════════════ -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
     <div class="login-logo">Dreamify.</div>
-    <div class="login-sub">Admin Panel — Restricted Access</div>
-    <p class="login-error" id="loginError">Invalid credentials. Try again.</p>
-    <label class="login-label">Username</label>
+    <div class="login-sub" id="loginSubText">Admin Panel — Restricted Access</div>
+    <div class="login-setup-notice" id="setupNotice">
+      👋 First time setup — please create your admin username and password. These will be saved securely in your browser.
+    </div>
+    <p class="login-error" id="loginError"></p>
+    <label class="login-label" id="userLabel">Username</label>
     <input class="login-input" id="loginUser" type="text" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/>
     <label class="login-label">Password</label>
     <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <!-- Confirm password shown only during first-time setup -->
+    <div id="confirmWrap" style="display:none">
+      <label class="login-label">Confirm Password</label>
+      <input class="login-input" id="loginConfirm" type="password" placeholder="Re-enter password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-btn" id="loginBtnText" onclick="doLogin()">Sign In →</button>
   </div>
 </div>
 
 <div class="layout">
-
-  <!-- SIDEBAR OVERLAY -->
   <div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
 
-  <!-- SIDEBAR -->
+  <!-- ═══ SIDEBAR ══════════════════════════════════════════════ -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M4 16L10 4L16 16" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 11L13.5 11" stroke="black" stroke-width="2" stroke-linecap="round"/></svg></div>
@@ -250,34 +273,33 @@
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <button class="nav-item active" onclick="go('dashboard',this)">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
       </button>
       <div class="nav-section-label">Client</div>
       <button class="nav-item" onclick="go('enquiries',this)">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Enquiries
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Enquiries
         <span class="badge" id="sb-badge">0</span>
       </button>
       <div class="nav-section-label">Content</div>
       <button class="nav-item" onclick="go('testimonials',this)">
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Testimonials
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Testimonials
       </button>
       <button class="nav-item" onclick="go('video-reviews',this)">
-        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Video Reviews
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Reviews
+      </button>
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item" onclick="go('security',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Security
       </button>
     </nav>
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="doLogout()">
-        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Logout
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout
       </button>
     </div>
   </aside>
 
-  <!-- MAIN -->
+  <!-- ═══ MAIN ═════════════════════════════════════════════════ -->
   <main class="main">
     <div class="topbar">
       <div class="topbar-left">
@@ -287,9 +309,9 @@
         <div class="topbar-title" id="pageTitle">Dashboard</div>
       </div>
       <div class="topbar-right">
-        <div class="topbar-admin">
-          <div class="topbar-avatar">A</div>
-          <span class="admin-name">Admin</span>
+        <div class="topbar-admin" onclick="go('security',null)" style="cursor:pointer" title="Security Settings">
+          <div class="topbar-avatar" id="topbarInitial">A</div>
+          <span class="admin-name" id="topbarUsername">Admin</span>
         </div>
       </div>
     </div>
@@ -345,10 +367,8 @@
             <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="t-role" placeholder="CEO, TechStart"/></div>
             <div class="form-group-admin"><label class="admin-label">Rating</label>
               <div class="star-picker" id="starPicker">
-                <button class="star-btn on" onclick="setStars(1)">★</button>
-                <button class="star-btn on" onclick="setStars(2)">★</button>
-                <button class="star-btn on" onclick="setStars(3)">★</button>
-                <button class="star-btn on" onclick="setStars(4)">★</button>
+                <button class="star-btn on" onclick="setStars(1)">★</button><button class="star-btn on" onclick="setStars(2)">★</button>
+                <button class="star-btn on" onclick="setStars(3)">★</button><button class="star-btn on" onclick="setStars(4)">★</button>
                 <button class="star-btn on" onclick="setStars(5)">★</button>
               </div>
             </div>
@@ -364,154 +384,160 @@
         </div>
       </div>
 
-      <!-- ─── VIDEO REVIEWS PAGE ──────────────────── -->
+      <!-- VIDEO REVIEWS -->
       <div class="page" id="page-video-reviews">
-
-        <!-- TAB SWITCHER -->
         <div style="display:flex;gap:0;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;width:fit-content">
-          <button id="tab-yt" onclick="switchVTab('yt')"
-            style="padding:12px 24px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:white;color:black">
-            ▶ YouTube Link
-          </button>
-          <button id="tab-up" onclick="switchVTab('up')"
-            style="padding:12px 24px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.45)">
-            ⬆ Upload from Laptop
-          </button>
+          <button id="tab-yt" onclick="switchVTab('yt')" style="padding:12px 24px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:white;color:black">▶ YouTube Link</button>
+          <button id="tab-up" onclick="switchVTab('up')" style="padding:12px 24px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.45)">⬆ Upload from Laptop</button>
         </div>
-
-        <!-- ── PANEL A: YouTube ─────────────────── -->
         <div id="vt-panel-yt" class="add-form" style="margin-bottom:24px">
           <div class="add-form-title">▶ Add YouTube Video</div>
-          <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:20px;line-height:1.6">
-            Video will only play <strong style="color:rgba(255,255,255,.6)">embedded on your website</strong> — visitors cannot open YouTube directly. Thumbnail is auto-extracted.
-          </p>
+          <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:20px;line-height:1.6">Video will only play <strong style="color:rgba(255,255,255,.6)">embedded on your website</strong> — visitors cannot open YouTube directly.</p>
           <div class="form-row-admin">
             <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="yt-name" placeholder="Matthew West"/></div>
             <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="yt-role" placeholder="CEO, Bloom Journal"/></div>
             <div class="form-group-admin"><label class="admin-label">Rating</label>
               <div class="star-picker" id="ytStarPicker">
-                <button class="star-btn on" onclick="setYTStars(1)">★</button>
-                <button class="star-btn on" onclick="setYTStars(2)">★</button>
-                <button class="star-btn on" onclick="setYTStars(3)">★</button>
-                <button class="star-btn on" onclick="setYTStars(4)">★</button>
+                <button class="star-btn on" onclick="setYTStars(1)">★</button><button class="star-btn on" onclick="setYTStars(2)">★</button>
+                <button class="star-btn on" onclick="setYTStars(3)">★</button><button class="star-btn on" onclick="setYTStars(4)">★</button>
                 <button class="star-btn on" onclick="setYTStars(5)">★</button>
               </div>
             </div>
           </div>
-          <div class="form-group-admin" style="margin-bottom:14px">
-            <label class="admin-label">YouTube URL *</label>
-            <input class="admin-input" id="yt-url" placeholder="https://youtu.be/... or https://youtube.com/watch?v=..."
-              oninput="autoPreviewYT()"/>
-          </div>
-          <div class="form-group-admin" style="margin-bottom:18px">
-            <label class="admin-label">Short Description</label>
-            <input class="admin-input" id="yt-desc" placeholder="Amazing work, delivered on time!"/>
-          </div>
-          <!-- Auto thumbnail preview -->
+          <div class="form-group-admin" style="margin-bottom:14px"><label class="admin-label">YouTube URL *</label><input class="admin-input" id="yt-url" placeholder="https://youtu.be/... or https://youtube.com/watch?v=..." oninput="autoPreviewYT()"/></div>
+          <div class="form-group-admin" style="margin-bottom:18px"><label class="admin-label">Short Description</label><input class="admin-input" id="yt-desc" placeholder="Amazing work, delivered on time!"/></div>
           <div id="yt-preview" style="display:none;margin-bottom:18px;padding:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px">
             <label class="admin-label" style="margin-bottom:8px">Auto Thumbnail Preview</label>
             <div style="display:flex;align-items:center;gap:14px">
-              <img id="yt-preview-img" src="" alt="thumb"
-                style="width:140px;height:90px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.12)"/>
-              <div>
-                <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:4px" id="yt-preview-id">—</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.3)">Embed-only mode active ✓</div>
-              </div>
+              <img id="yt-preview-img" src="" alt="thumb" style="width:140px;height:90px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.12)"/>
+              <div><div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:4px" id="yt-preview-id">—</div><div style="font-size:11px;color:rgba(255,255,255,.3)">Embed-only mode active ✓</div></div>
             </div>
           </div>
           <button class="btn-add" onclick="addYTVideo()">Add YouTube Video ▶</button>
         </div>
-
-        <!-- ── PANEL B: Upload ──────────────────── -->
         <div id="vt-panel-up" class="add-form" style="margin-bottom:24px;display:none">
           <div class="add-form-title">⬆ Upload Video from Laptop</div>
-          <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:20px;line-height:1.6">
-            Video is stored on <strong style="color:rgba(255,255,255,.6)">your EC2 server</strong> and served from your domain. Supports MP4, MOV, WebM up to 500MB.
-          </p>
+          <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:20px;line-height:1.6">Video stored on <strong style="color:rgba(255,255,255,.6)">your EC2 server</strong>. Supports MP4, MOV, WebM up to 500MB.</p>
           <div class="form-row-admin">
             <div class="form-group-admin"><label class="admin-label">Client Name *</label><input class="admin-input" id="up-name" placeholder="Anurag Bezboruah"/></div>
             <div class="form-group-admin"><label class="admin-label">Role / Company</label><input class="admin-input" id="up-role" placeholder="CEO, Finixa Dedeons"/></div>
             <div class="form-group-admin"><label class="admin-label">Rating</label>
               <div class="star-picker" id="upStarPicker">
-                <button class="star-btn on" onclick="setUPStars(1)">★</button>
-                <button class="star-btn on" onclick="setUPStars(2)">★</button>
-                <button class="star-btn on" onclick="setUPStars(3)">★</button>
-                <button class="star-btn on" onclick="setUPStars(4)">★</button>
+                <button class="star-btn on" onclick="setUPStars(1)">★</button><button class="star-btn on" onclick="setUPStars(2)">★</button>
+                <button class="star-btn on" onclick="setUPStars(3)">★</button><button class="star-btn on" onclick="setUPStars(4)">★</button>
                 <button class="star-btn on" onclick="setUPStars(5)">★</button>
               </div>
             </div>
           </div>
-          <div class="form-group-admin" style="margin-bottom:14px">
-            <label class="admin-label">Short Description</label>
-            <input class="admin-input" id="up-desc" placeholder="Absolute win for my team!"/>
-          </div>
-
-          <!-- Video file drop zone -->
+          <div class="form-group-admin" style="margin-bottom:14px"><label class="admin-label">Short Description</label><input class="admin-input" id="up-desc" placeholder="Absolute win for my team!"/></div>
           <div class="form-group-admin" style="margin-bottom:14px">
             <label class="admin-label">Video File * (MP4, MOV, WebM — max 500MB)</label>
-            <div id="up-dropzone"
-              style="border:2px dashed rgba(255,255,255,.15);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:border-color .3s;background:rgba(255,255,255,.02)"
-              onclick="document.getElementById('up-file').click()"
-              ondragover="event.preventDefault();this.style.borderColor='rgba(255,255,255,.4)'"
-              ondragleave="this.style.borderColor='rgba(255,255,255,.15)'"
-              ondrop="handleFileDrop(event)">
+            <div id="up-dropzone" style="border:2px dashed rgba(255,255,255,.15);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:border-color .3s;background:rgba(255,255,255,.02)" onclick="document.getElementById('up-file').click()" ondragover="event.preventDefault();this.style.borderColor='rgba(255,255,255,.4)'" ondragleave="this.style.borderColor='rgba(255,255,255,.15)'" ondrop="handleFileDrop(event)">
               <div style="font-size:28px;margin-bottom:10px">📁</div>
               <div style="font-size:13px;color:rgba(255,255,255,.5)">Drop video here or <span style="color:white;text-decoration:underline">click to browse</span></div>
               <div id="up-file-name" style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.35)">No file selected</div>
             </div>
             <input type="file" id="up-file" accept="video/*" style="display:none" onchange="onVideoFileSelect(this)"/>
           </div>
-
-          <!-- Thumbnail file (optional) -->
           <div class="form-group-admin" style="margin-bottom:14px">
-            <label class="admin-label">Custom Thumbnail Image (optional — JPG/PNG)</label>
+            <label class="admin-label">Custom Thumbnail Image (optional)</label>
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <button class="action-btn" onclick="document.getElementById('up-thumb-file').click()">
-                Choose Thumbnail
-              </button>
+              <button class="action-btn" onclick="document.getElementById('up-thumb-file').click()">Choose Thumbnail</button>
               <input type="file" id="up-thumb-file" accept="image/*" style="display:none" onchange="onThumbFileSelect(this)"/>
               <span id="up-thumb-name" style="font-size:12px;color:rgba(255,255,255,.35)">No thumbnail selected</span>
             </div>
-            <!-- Thumbnail preview -->
-            <div id="up-thumb-preview" style="display:none;margin-top:10px">
-              <img id="up-thumb-img" src="" alt="thumb"
-                style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.12)"/>
-            </div>
+            <div id="up-thumb-preview" style="display:none;margin-top:10px"><img id="up-thumb-img" src="" alt="thumb" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.12)"/></div>
           </div>
-
-          <!-- Upload progress bar -->
           <div id="up-progress-wrap" style="display:none;margin-bottom:18px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:11px;color:rgba(255,255,255,.4)">Uploading...</span>
-              <span id="up-pct" style="font-size:11px;color:rgba(255,255,255,.4)">0%</span>
-            </div>
-            <div style="background:rgba(255,255,255,.08);border-radius:100px;height:6px;overflow:hidden">
-              <div id="up-bar" style="height:6px;background:white;border-radius:100px;width:0;transition:width .3s"></div>
-            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:rgba(255,255,255,.4)">Uploading...</span><span id="up-pct" style="font-size:11px;color:rgba(255,255,255,.4)">0%</span></div>
+            <div style="background:rgba(255,255,255,.08);border-radius:100px;height:6px;overflow:hidden"><div id="up-bar" style="height:6px;background:white;border-radius:100px;width:0;transition:width .3s"></div></div>
           </div>
-
           <button class="btn-add" id="up-submit-btn" onclick="addUploadVideo()">Upload & Save ⬆</button>
         </div>
-
-        <!-- ── VIDEO LIST TABLE ──────────────────── -->
         <div class="table-wrap">
-          <div class="table-header">
-            <div class="table-title">All Video Testimonials</div>
-            <div style="font-size:12px;color:var(--gray)">Click Toggle to show/hide on website</div>
-          </div>
-          <table class="desk-table">
-            <thead><tr>
-              <th>Thumbnail</th><th>Client</th><th>Type</th>
-              <th>Rating</th><th>Status</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="vt-body-desk">
-              <tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading…</td></tr>
-            </tbody>
-          </table>
+          <div class="table-header"><div class="table-title">All Video Testimonials</div><div style="font-size:12px;color:var(--gray)">Toggle to show/hide on website</div></div>
+          <table class="desk-table"><thead><tr><th>Thumbnail</th><th>Client</th><th>Type</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="vt-body-desk"><tr><td colspan="6" style="text-align:center;padding:40px;color:rgba(255,255,255,.2)">Loading…</td></tr></tbody></table>
           <div class="mob-list" id="vt-body-mob"></div>
         </div>
+      </div>
 
-      </div><!-- /page-video-reviews -->
+      <!-- ═══ SECURITY PAGE ══════════════════════════════════ -->
+      <div class="page" id="page-security">
+
+        <!-- Change Username -->
+        <div class="security-card">
+          <div class="security-card-title">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Change Username
+          </div>
+          <div class="security-card-sub">Update the username used to sign in to the admin panel.</div>
+          <div class="form-group-admin" style="margin-bottom:14px;max-width:400px">
+            <label class="admin-label">New Username</label>
+            <input class="admin-input" id="new-username" placeholder="Enter new username"/>
+          </div>
+          <div class="form-group-admin" style="margin-bottom:20px;max-width:400px">
+            <label class="admin-label">Current Password (to confirm)</label>
+            <div class="input-with-eye">
+              <input class="admin-input" id="confirm-pw-username" type="password" placeholder="Enter current password"/>
+              <button class="eye-btn" onclick="toggleEye('confirm-pw-username',this)" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <button class="btn-add" onclick="changeUsername()">Update Username</button>
+        </div>
+
+        <!-- Change Password -->
+        <div class="security-card">
+          <div class="security-card-title">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Change Password
+          </div>
+          <div class="security-card-sub">Use a strong password — at least 8 characters with a mix of letters, numbers and symbols.</div>
+          <div class="form-group-admin" style="margin-bottom:14px;max-width:400px">
+            <label class="admin-label">Current Password</label>
+            <div class="input-with-eye">
+              <input class="admin-input" id="cur-password" type="password" placeholder="Current password"/>
+              <button class="eye-btn" onclick="toggleEye('cur-password',this)" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <div class="form-group-admin" style="margin-bottom:14px;max-width:400px">
+            <label class="admin-label">New Password</label>
+            <div class="input-with-eye">
+              <input class="admin-input" id="new-password" type="password" placeholder="Min 8 characters" oninput="checkStrength(this.value)"/>
+              <button class="eye-btn" onclick="toggleEye('new-password',this)" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="pw-strength-wrap" id="pw-strength-wrap">
+              <div class="pw-strength-bar"><div class="pw-strength-fill" id="pw-strength-fill"></div></div>
+              <span class="pw-strength-label" id="pw-strength-label"></span>
+            </div>
+          </div>
+          <div class="form-group-admin" style="margin-bottom:20px;max-width:400px">
+            <label class="admin-label">Confirm New Password</label>
+            <div class="input-with-eye">
+              <input class="admin-input" id="confirm-new-password" type="password" placeholder="Re-enter new password"/>
+              <button class="eye-btn" onclick="toggleEye('confirm-new-password',this)" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <button class="btn-add" onclick="changePassword()">Update Password</button>
+        </div>
+
+        <!-- Session Info -->
+        <div class="security-card">
+          <div class="security-card-title">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Session Info
+          </div>
+          <div class="security-card-sub">Current login session details.</div>
+          <div class="session-info"><span class="session-info-label">Logged in as</span><span class="session-info-value" id="sess-username">—</span></div>
+          <div class="session-info"><span class="session-info-label">Session started</span><span class="session-info-value" id="sess-time">—</span></div>
+          <div class="session-info"><span class="session-info-label">Credentials stored</span><span class="session-info-value">Browser localStorage (SHA-256 hashed)</span></div>
+          <div style="margin-top:20px">
+            <button class="btn-danger" onclick="resetCredentials()">⚠ Reset All Credentials</button>
+            <p style="font-size:11px;color:rgba(255,255,255,.25);margin-top:10px">This will delete your stored username and password. You will be asked to set up new credentials on next login.</p>
+          </div>
+        </div>
+
+      </div><!-- /page-security -->
 
     </div><!-- /content -->
   </main>
@@ -532,12 +558,11 @@
       <button class="bnav-btn" id="bn-video-reviews" onclick="go('video-reviews',this,'bn')">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Videos
       </button>
-      <button class="bnav-btn" onclick="doLogout()">
-        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout
+      <button class="bnav-btn" id="bn-security" onclick="go('security',this,'bn')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Security
       </button>
     </div>
   </nav>
-
 </div>
 
 <!-- DETAIL BOTTOM SHEET -->
@@ -568,14 +593,242 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg">Done!</span></div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+//  CREDENTIAL SYSTEM — SHA-256 hashed, stored in localStorage
+//  Keys:  dreamify_admin_user  (plaintext username)
+//         dreamify_admin_hash  (SHA-256 of password)
+//         dreamify_session_time
+// ═══════════════════════════════════════════════════════════════
+const STORAGE_USER = 'dreamify_admin_user';
+const STORAGE_HASH = 'dreamify_admin_hash';
+const STORAGE_SESS = 'dreamify_session_time';
+
+// Fallback defaults — only used if no credentials have been saved yet
+// These are the initial credentials to set up with on first login
+const DEFAULT_USER = 'admin';
+const DEFAULT_PASS = 'dreamify2025';  // user will be prompted to change this
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256',
+    new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getStoredUser() { return localStorage.getItem(STORAGE_USER); }
+function getStoredHash() { return localStorage.getItem(STORAGE_HASH); }
+function isFirstTimeSetup() { return !getStoredHash(); }
+
+// On page load — show first-time setup UI if no credentials saved yet
+window.addEventListener('DOMContentLoaded', () => {
+  if (isFirstTimeSetup()) {
+    document.getElementById('loginSubText').textContent = 'First Time Setup';
+    document.getElementById('setupNotice').style.display = 'block';
+    document.getElementById('userLabel').textContent = 'Create Username';
+    document.getElementById('confirmWrap').style.display = 'block';
+    document.getElementById('loginBtnText').textContent = 'Create Account →';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginUser').placeholder = 'Choose a username';
+  } else {
+    document.getElementById('loginUser').value = getStoredUser() || '';
+  }
+});
+
+async function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+
+  if (!user) { showLoginError('Username cannot be empty'); return; }
+  if (!pass)  { showLoginError('Password cannot be empty'); return; }
+
+  if (isFirstTimeSetup()) {
+    // ── First time: create credentials ──
+    const confirm = document.getElementById('loginConfirm').value;
+    if (pass.length < 8) { showLoginError('Password must be at least 8 characters'); return; }
+    if (pass !== confirm) { showLoginError('Passwords do not match'); return; }
+
+    const hash = await sha256(pass);
+    localStorage.setItem(STORAGE_USER, user);
+    localStorage.setItem(STORAGE_HASH, hash);
+    localStorage.setItem(STORAGE_SESS, new Date().toISOString());
+    enterDashboard(user);
+
+  } else {
+    // ── Normal login: verify against stored hash ──
+    const storedUser = getStoredUser();
+    const storedHash = getStoredHash();
+    const inputHash  = await sha256(pass);
+
+    // Also accept DEFAULT_PASS if user never changed it
+    const defaultHash = await sha256(DEFAULT_PASS);
+    const passOk = (inputHash === storedHash) ||
+                   (inputHash === defaultHash && user === (storedUser || DEFAULT_USER));
+    const userOk = user === (storedUser || DEFAULT_USER);
+
+    if (userOk && passOk) {
+      // If they logged in with the default password, prompt to change it
+      if (inputHash === defaultHash && !storedHash) {
+        localStorage.setItem(STORAGE_USER, user);
+        localStorage.setItem(STORAGE_HASH, defaultHash);
+      }
+      localStorage.setItem(STORAGE_SESS, new Date().toISOString());
+      enterDashboard(user);
+    } else {
+      showLoginError('Incorrect username or password');
+      document.getElementById('loginPass').value = '';
+    }
+  }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function enterDashboard(user) {
+  document.getElementById('loginWrap').classList.add('hidden');
+  // Update topbar
+  document.getElementById('topbarInitial').textContent = user.charAt(0).toUpperCase();
+  document.getElementById('topbarUsername').textContent = user;
+  // Update session page
+  document.getElementById('sess-username').textContent = user;
+  const sess = localStorage.getItem(STORAGE_SESS);
+  document.getElementById('sess-time').textContent = sess
+    ? new Date(sess).toLocaleString('en-IN') : '—';
+  loadAll();
+}
+
+function doLogout() {
+  document.getElementById('loginWrap').classList.remove('hidden');
+  // Reset login form to normal state
+  document.getElementById('setupNotice').style.display = 'none';
+  document.getElementById('confirmWrap').style.display = 'none';
+  document.getElementById('loginBtnText').textContent = 'Sign In →';
+  document.getElementById('loginSubText').textContent = 'Admin Panel — Restricted Access';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  closeSidebar();
+}
+
+// ── CHANGE USERNAME ──────────────────────────────────────────────
+async function changeUsername() {
+  const newUser = document.getElementById('new-username').value.trim();
+  const curPass = document.getElementById('confirm-pw-username').value;
+  if (!newUser) { toast('Enter a new username', false); return; }
+  if (!curPass)  { toast('Enter your current password to confirm', false); return; }
+
+  const inputHash  = await sha256(curPass);
+  const storedHash = getStoredHash();
+  const defaultHash = await sha256(DEFAULT_PASS);
+  const valid = inputHash === storedHash || inputHash === defaultHash;
+
+  if (!valid) { toast('Current password is incorrect', false); return; }
+
+  localStorage.setItem(STORAGE_USER, newUser);
+  document.getElementById('new-username').value = '';
+  document.getElementById('confirm-pw-username').value = '';
+  document.getElementById('topbarInitial').textContent = newUser.charAt(0).toUpperCase();
+  document.getElementById('topbarUsername').textContent = newUser;
+  document.getElementById('sess-username').textContent = newUser;
+  toast('Username updated ✓');
+}
+
+// ── CHANGE PASSWORD ──────────────────────────────────────────────
+async function changePassword() {
+  const curPass  = document.getElementById('cur-password').value;
+  const newPass  = document.getElementById('new-password').value;
+  const confPass = document.getElementById('confirm-new-password').value;
+
+  if (!curPass)  { toast('Enter your current password', false); return; }
+  if (!newPass)  { toast('Enter a new password', false); return; }
+  if (newPass.length < 8) { toast('New password must be at least 8 characters', false); return; }
+  if (newPass !== confPass) { toast('New passwords do not match', false); return; }
+
+  const inputHash   = await sha256(curPass);
+  const storedHash  = getStoredHash();
+  const defaultHash = await sha256(DEFAULT_PASS);
+  const valid = inputHash === storedHash || inputHash === defaultHash;
+
+  if (!valid) { toast('Current password is incorrect', false); return; }
+
+  const newHash = await sha256(newPass);
+  localStorage.setItem(STORAGE_HASH, newHash);
+
+  document.getElementById('cur-password').value = '';
+  document.getElementById('new-password').value = '';
+  document.getElementById('confirm-new-password').value = '';
+  document.getElementById('pw-strength-wrap').style.display = 'none';
+  toast('Password updated successfully ✓');
+}
+
+// ── RESET CREDENTIALS ────────────────────────────────────────────
+function resetCredentials() {
+  if (!confirm('This will delete your username and password. You will need to set up new credentials. Continue?')) return;
+  localStorage.removeItem(STORAGE_USER);
+  localStorage.removeItem(STORAGE_HASH);
+  localStorage.removeItem(STORAGE_SESS);
+  // Show first-time setup on next login
+  document.getElementById('loginSubText').textContent = 'First Time Setup';
+  document.getElementById('setupNotice').style.display = 'block';
+  document.getElementById('confirmWrap').style.display = 'block';
+  document.getElementById('loginBtnText').textContent = 'Create Account →';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginUser').placeholder = 'Choose a username';
+  doLogout();
+  toast('Credentials reset. Please set up new credentials.');
+}
+
+// ── PASSWORD STRENGTH METER ───────────────────────────────────────
+function checkStrength(pw) {
+  const wrap = document.getElementById('pw-strength-wrap');
+  const fill = document.getElementById('pw-strength-fill');
+  const label = document.getElementById('pw-strength-label');
+  if (!pw) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  let score = 0;
+  if (pw.length >= 8)  score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const levels = [
+    { w:'20%', c:'#ff4444', t:'Very weak' },
+    { w:'40%', c:'#ff8800', t:'Weak' },
+    { w:'60%', c:'#ffd700', t:'Fair' },
+    { w:'80%', c:'#78b4ff', t:'Strong' },
+    { w:'100%',c:'#64dcb4', t:'Very strong' }
+  ];
+  const lvl = levels[Math.min(score, 4)];
+  fill.style.width = lvl.w;
+  fill.style.background = lvl.c;
+  label.textContent = lvl.t;
+  label.style.color = lvl.c;
+}
+
+// ── TOGGLE PASSWORD VISIBILITY ────────────────────────────────────
+function toggleEye(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const isPassword = inp.type === 'password';
+  inp.type = isPassword ? 'text' : 'password';
+  btn.innerHTML = isPassword
+    ? `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+    : `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SIDEBAR & NAVIGATION
+// ═══════════════════════════════════════════════════════════════
 const API='/api';
 let enqs=[],testis=[],stars=5,curId=null;
 
-/* ── SIDEBAR ── */
 function toggleSidebar(){
   const s=document.getElementById('sidebar'),o=document.getElementById('sbOverlay');
   s.classList.toggle('open');o.classList.toggle('show');
@@ -587,53 +840,43 @@ function closeSidebar(){
   document.body.style.overflow='';
 }
 
-/* ── LOGIN ── */
-function doLogin(){
-  const u=document.getElementById('loginUser').value.trim();
-  const p=document.getElementById('loginPass').value;
-  if(u==='admin'&&p==='dreamify2025'){
-    document.getElementById('loginWrap').classList.add('hidden');
-    loadAll();
-  }else{
-    document.getElementById('loginError').style.display='block';
-    document.getElementById('loginPass').value='';
-  }
-}
-function doLogout(){document.getElementById('loginWrap').classList.remove('hidden');closeSidebar();}
-
-/* ── NAVIGATION ── */
-const TITLES={dashboard:'Dashboard',enquiries:'Enquiries',testimonials:'Testimonials','video-reviews':'Video Reviews'};
+const TITLES={dashboard:'Dashboard',enquiries:'Enquiries',testimonials:'Testimonials','video-reviews':'Video Reviews',security:'Security'};
 function go(id,el,src){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.querySelectorAll('.bnav-btn').forEach(n=>n.classList.remove('active'));
-  const sideBtn=document.querySelector(`.nav-item[onclick*="${id}"]`);
+  const sideBtn=document.querySelector(`.nav-item[onclick*="'${id}'"]`);
   if(sideBtn)sideBtn.classList.add('active');
   const bnBtn=document.getElementById('bn-'+id);
   if(bnBtn)bnBtn.classList.add('active');
   document.getElementById('pageTitle').textContent=TITLES[id]||id;
+  // Refresh session info when opening security page
+  if(id==='security'){
+    document.getElementById('sess-username').textContent=getStoredUser()||'—';
+    const s=localStorage.getItem(STORAGE_SESS);
+    document.getElementById('sess-time').textContent=s?new Date(s).toLocaleString('en-IN'):'—';
+  }
   closeSidebar();
   window.scrollTo(0,0);
 }
 
-/* ── LOAD ── */
 async function loadAll(){await Promise.all([loadDash(),loadEnqs(),loadTestis(),loadVideoTestis()]);}
 
-/* ── TOAST ── */
+// ── TOAST ──────────────────────────────────────────────────────
 function toast(msg,ok=true){
   const t=document.getElementById('toast');
   document.getElementById('toast-msg').textContent=msg;
   t.style.borderColor=ok?'rgba(100,220,180,.3)':'rgba(255,100,100,.3)';
   t.querySelector('.toast-dot').style.background=ok?'#64dcb4':'#ff6b6b';
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
 }
 
-/* ── DASHBOARD ── */
+// ── DASHBOARD ─────────────────────────────────────────────────
 async function loadDash(){
   try{
     const[er,tr]=await Promise.all([fetch(API+'/enquiries'),fetch(API+'/testimonials')]);
-    enqs=await er.json(); testis=await tr.json();
+    enqs=await er.json();testis=await tr.json();
     const nw=enqs.filter(e=>e.status==='NEW').length;
     document.getElementById('d-total').textContent=enqs.length;
     document.getElementById('d-new').textContent=nw;
@@ -642,7 +885,7 @@ async function loadDash(){
     const dot=document.getElementById('bn-dot');
     if(dot)dot.style.display=nw>0?'block':'none';
     const rec=enqs.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
-    drawDashDesk(rec); drawDashMob(rec);
+    drawDashDesk(rec);drawDashMob(rec);
   }catch(e){document.getElementById('d-total').textContent='—';toast('API not reachable',false);}
 }
 function drawDashDesk(r){
@@ -669,7 +912,7 @@ function drawDashMob(r){
   </div>`).join('');
 }
 
-/* ── ENQUIRIES ── */
+// ── ENQUIRIES ─────────────────────────────────────────────────
 async function loadEnqs(){
   try{const r=await fetch(API+'/enquiries');enqs=await r.json();drawEnqDesk(enqs);drawEnqMob(enqs);}
   catch(e){document.getElementById('enq-desk').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load</div></td></tr>';}
@@ -724,7 +967,7 @@ async function delEnq(id,e){
   catch(e){toast('Failed to delete',false);}
 }
 
-/* ── DETAIL ── */
+// ── DETAIL ────────────────────────────────────────────────────
 function openDetail(id){
   const x=enqs.find(e=>e.id===id);if(!x)return;
   curId=id;
@@ -750,7 +993,7 @@ async function updateStatus(){
   }catch(e){toast('Failed',false);}
 }
 
-/* ── TESTIMONIALS ── */
+// ── TESTIMONIALS ──────────────────────────────────────────────
 async function loadTestis(){
   try{const r=await fetch(API+'/testimonials');testis=await r.json();drawTestiDesk(testis);drawTestiMob(testis);document.getElementById('d-testi').textContent=testis.length;}
   catch(e){document.getElementById('testi-desk').innerHTML='<tr><td colspan="5"><div class="empty-state">Could not load</div></td></tr>';}
@@ -770,15 +1013,13 @@ function drawTestiMob(r){
   const b=document.getElementById('testi-mob');
   if(!r.length){b.innerHTML='<div class="empty-state"><div class="empty-icon">⭐</div>No testimonials yet</div>';return}
   b.innerHTML=r.map(x=>`<div class="mob-card">
-    <div class="mob-card-head">
-      <div><div class="mob-card-name">${x.clientName}</div><div class="mob-card-sub">${x.clientRole||'—'}</div></div>
-      <div style="color:#ffd700;font-size:14px">${'★'.repeat(x.rating||5)}</div>
-    </div>
+    <div class="mob-card-head"><div><div class="mob-card-name">${x.clientName}</div><div class="mob-card-sub">${x.clientRole||'—'}</div></div>
+    <div style="color:#ffd700;font-size:14px">${'★'.repeat(x.rating||5)}</div></div>
     <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:12px">"${x.content.substring(0,100)}${x.content.length>100?'...':''}"</div>
     <button class="action-btn danger" style="width:100%" onclick="delTesti(${x.id})">Delete</button>
   </div>`).join('');
 }
-function setStars(n){stars=n;document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));}
+function setStars(n){stars=n;document.querySelectorAll('#starPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));}
 async function addTesti(){
   const name=document.getElementById('t-name').value.trim();
   const role=document.getElementById('t-role').value.trim();
@@ -795,266 +1036,133 @@ async function delTesti(id){
   catch(e){toast('Failed',false);}
 }
 
-/* ── VIDEO TESTIMONIALS ─────────────────────────────────────── */
-let ytStars = 5, upStars = 5;
-let allVT = [];
-let selectedVideoFile = null, selectedThumbFile = null;
+// ── VIDEO TESTIMONIALS ────────────────────────────────────────
+let ytStars=5,upStars=5,allVT=[],selectedVideoFile=null,selectedThumbFile=null;
 
-/* Tab switcher */
 function switchVTab(tab){
-  const isYT = tab === 'yt';
-  document.getElementById('vt-panel-yt').style.display = isYT ? 'block' : 'none';
-  document.getElementById('vt-panel-up').style.display = isYT ? 'none'  : 'block';
-  const ytBtn = document.getElementById('tab-yt');
-  const upBtn = document.getElementById('tab-up');
-  ytBtn.style.background = isYT ? 'white' : 'transparent';
-  ytBtn.style.color       = isYT ? 'black' : 'rgba(255,255,255,.45)';
-  upBtn.style.background  = isYT ? 'transparent' : 'white';
-  upBtn.style.color       = isYT ? 'rgba(255,255,255,.45)' : 'black';
+  const isYT=tab==='yt';
+  document.getElementById('vt-panel-yt').style.display=isYT?'block':'none';
+  document.getElementById('vt-panel-up').style.display=isYT?'none':'block';
+  const y=document.getElementById('tab-yt'),u=document.getElementById('tab-up');
+  y.style.background=isYT?'white':'transparent';y.style.color=isYT?'black':'rgba(255,255,255,.45)';
+  u.style.background=isYT?'transparent':'white';u.style.color=isYT?'rgba(255,255,255,.45)':'black';
 }
-
-/* Star pickers */
-function setYTStars(n){ ytStars=n; document.querySelectorAll('#ytStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n)); }
-function setUPStars(n){ upStars=n; document.querySelectorAll('#upStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n)); }
-
-/* Extract YouTube ID from any YouTube URL format */
-function extractYTId(url){
-  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
-}
-
-/* Auto-preview thumbnail as user types YouTube URL */
+function setYTStars(n){ytStars=n;document.querySelectorAll('#ytStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));}
+function setUPStars(n){upStars=n;document.querySelectorAll('#upStarPicker .star-btn').forEach((b,i)=>b.classList.toggle('on',i<n));}
+function extractYTId(url){const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
 function autoPreviewYT(){
-  const url = document.getElementById('yt-url').value.trim();
-  const id  = extractYTId(url);
-  if(!id){
-    document.getElementById('yt-preview').style.display = 'none';
-    return;
-  }
-  document.getElementById('yt-preview-img').src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-  document.getElementById('yt-preview-id').textContent  = `Video ID: ${id}`;
-  document.getElementById('yt-preview').style.display   = 'block';
+  const url=document.getElementById('yt-url').value.trim();
+  const id=extractYTId(url);
+  if(!id){document.getElementById('yt-preview').style.display='none';return;}
+  document.getElementById('yt-preview-img').src=`https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  document.getElementById('yt-preview-id').textContent=`Video ID: ${id}`;
+  document.getElementById('yt-preview').style.display='block';
 }
-
-/* ── ADD YOUTUBE VIDEO ── */
 async function addYTVideo(){
-  const name = document.getElementById('yt-name').value.trim();
-  const role = document.getElementById('yt-role').value.trim();
-  const url  = document.getElementById('yt-url').value.trim();
-  const desc = document.getElementById('yt-desc').value.trim();
-  if(!name){ toast('Client name required', false); return; }
-  if(!url){  toast('YouTube URL required', false);  return; }
-  if(!extractYTId(url)){ toast('Invalid YouTube URL — paste a youtu.be or youtube.com link', false); return; }
+  const name=document.getElementById('yt-name').value.trim();
+  const role=document.getElementById('yt-role').value.trim();
+  const url=document.getElementById('yt-url').value.trim();
+  const desc=document.getElementById('yt-desc').value.trim();
+  if(!name){toast('Client name required',false);return;}
+  if(!url){toast('YouTube URL required',false);return;}
+  if(!extractYTId(url)){toast('Invalid YouTube URL',false);return;}
   try{
-    const res = await fetch(API+'/video-testimonials',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ clientName:name, clientRole:role, videoUrl:url, description:desc, rating:ytStars, active:true })
-    });
-    if(res.ok){
-      ['yt-name','yt-role','yt-url','yt-desc'].forEach(id=>{ document.getElementById(id).value=''; });
-      document.getElementById('yt-preview').style.display='none';
-      setYTStars(5);
-      toast('YouTube video added ▶');
-      loadVideoTestis();
-    } else { toast('Server error: '+(await res.text()), false); }
-  }catch(e){ toast('Could not reach server', false); }
+    const res=await fetch(API+'/video-testimonials',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clientName:name,clientRole:role,videoUrl:url,description:desc,rating:ytStars,active:true})});
+    if(res.ok){['yt-name','yt-role','yt-url','yt-desc'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('yt-preview').style.display='none';setYTStars(5);toast('YouTube video added ▶');loadVideoTestis();}
+    else toast('Server error: '+(await res.text()),false);
+  }catch(e){toast('Could not reach server',false);}
 }
-
-/* ── FILE SELECTION ── */
 function onVideoFileSelect(input){
-  const file = input.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('video/')){
-    toast('Please select a video file (MP4, MOV, WebM)', false);
-    input.value=''; return;
-  }
-  if(file.size > 500 * 1024 * 1024){
-    toast('File too large — max 500 MB', false);
-    input.value=''; return;
-  }
-  selectedVideoFile = file;
-  document.getElementById('up-file-name').textContent =
-    `${file.name}  (${(file.size/1024/1024).toFixed(1)} MB)`;
-  document.getElementById('up-dropzone').style.borderColor = 'rgba(255,255,255,.4)';
+  const file=input.files[0];if(!file)return;
+  if(!file.type.startsWith('video/')){toast('Select a video file',false);input.value='';return;}
+  if(file.size>500*1024*1024){toast('Max 500 MB',false);input.value='';return;}
+  selectedVideoFile=file;
+  document.getElementById('up-file-name').textContent=`${file.name}  (${(file.size/1024/1024).toFixed(1)} MB)`;
+  document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.4)';
 }
-
 function handleFileDrop(e){
-  e.preventDefault();
-  document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.15)';
-  const file = e.dataTransfer.files[0];
-  if(!file) return;
-  // Feed into same handler
-  const dt = new DataTransfer(); dt.items.add(file);
-  const inp = document.getElementById('up-file');
-  inp.files = dt.files;
-  onVideoFileSelect(inp);
+  e.preventDefault();document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.15)';
+  const file=e.dataTransfer.files[0];if(!file)return;
+  const dt=new DataTransfer();dt.items.add(file);
+  const inp=document.getElementById('up-file');inp.files=dt.files;onVideoFileSelect(inp);
 }
-
 function onThumbFileSelect(input){
-  const file = input.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('image/')){
-    toast('Please select an image file', false); input.value=''; return;
-  }
-  selectedThumbFile = file;
-  document.getElementById('up-thumb-name').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('up-thumb-img').src = e.target.result;
-    document.getElementById('up-thumb-preview').style.display = 'block';
-  };
+  const file=input.files[0];if(!file)return;
+  if(!file.type.startsWith('image/')){toast('Select an image file',false);input.value='';return;}
+  selectedThumbFile=file;
+  document.getElementById('up-thumb-name').textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{document.getElementById('up-thumb-img').src=e.target.result;document.getElementById('up-thumb-preview').style.display='block';};
   reader.readAsDataURL(file);
 }
-
-/* ── UPLOAD VIDEO FROM LAPTOP ── */
 async function addUploadVideo(){
-  const name = document.getElementById('up-name').value.trim();
-  const role = document.getElementById('up-role').value.trim();
-  const desc = document.getElementById('up-desc').value.trim();
-  if(!name){           toast('Client name required', false); return; }
-  if(!selectedVideoFile){ toast('Please select a video file', false); return; }
-
-  const formData = new FormData();
-  formData.append('file',       selectedVideoFile);
-  formData.append('clientName', name);
-  formData.append('clientRole', role || '');
-  formData.append('description',desc || '');
-  formData.append('rating',     String(upStars));
-  if(selectedThumbFile) formData.append('thumbnailFile', selectedThumbFile);
-
-  // Show progress bar
-  document.getElementById('up-progress-wrap').style.display = 'block';
-  const btn = document.getElementById('up-submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Uploading…';
-
+  const name=document.getElementById('up-name').value.trim();
+  const role=document.getElementById('up-role').value.trim();
+  const desc=document.getElementById('up-desc').value.trim();
+  if(!name){toast('Client name required',false);return;}
+  if(!selectedVideoFile){toast('Select a video file',false);return;}
+  const fd=new FormData();
+  fd.append('file',selectedVideoFile);fd.append('clientName',name);fd.append('clientRole',role||'');fd.append('description',desc||'');fd.append('rating',String(upStars));
+  if(selectedThumbFile)fd.append('thumbnailFile',selectedThumbFile);
+  document.getElementById('up-progress-wrap').style.display='block';
+  const btn=document.getElementById('up-submit-btn');btn.disabled=true;btn.textContent='Uploading…';
   try{
-    await uploadWithProgress(
-      API+'/video-testimonials/upload',
-      formData,
-      pct => {
-        document.getElementById('up-bar').style.width = pct+'%';
-        document.getElementById('up-pct').textContent  = pct+'%';
-      }
-    );
-    // Clear form
-    ['up-name','up-role','up-desc'].forEach(id=>{ document.getElementById(id).value=''; });
-    document.getElementById('up-file').value='';
-    document.getElementById('up-thumb-file').value='';
-    document.getElementById('up-file-name').textContent = 'No file selected';
-    document.getElementById('up-thumb-name').textContent = 'No thumbnail selected';
-    document.getElementById('up-thumb-preview').style.display='none';
-    document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.15)';
-    document.getElementById('up-progress-wrap').style.display='none';
-    document.getElementById('up-bar').style.width='0';
-    selectedVideoFile = null; selectedThumbFile = null;
-    setUPStars(5);
-    toast('Video uploaded & saved ✓');
-    loadVideoTestis();
-  }catch(err){
-    toast('Upload failed: '+err.message, false);
-    document.getElementById('up-progress-wrap').style.display='none';
-  }finally{
-    btn.disabled = false;
-    btn.textContent = 'Upload & Save ⬆';
-  }
+    await uploadWithProgress(API+'/video-testimonials/upload',fd,pct=>{document.getElementById('up-bar').style.width=pct+'%';document.getElementById('up-pct').textContent=pct+'%';});
+    ['up-name','up-role','up-desc'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('up-file').value='';document.getElementById('up-thumb-file').value='';
+    document.getElementById('up-file-name').textContent='No file selected';document.getElementById('up-thumb-name').textContent='No thumbnail selected';
+    document.getElementById('up-thumb-preview').style.display='none';document.getElementById('up-dropzone').style.borderColor='rgba(255,255,255,.15)';
+    document.getElementById('up-progress-wrap').style.display='none';document.getElementById('up-bar').style.width='0';
+    selectedVideoFile=null;selectedThumbFile=null;setUPStars(5);toast('Video uploaded ✓');loadVideoTestis();
+  }catch(err){toast('Upload failed: '+err.message,false);document.getElementById('up-progress-wrap').style.display='none';}
+  finally{btn.disabled=false;btn.textContent='Upload & Save ⬆';}
 }
-
-/* XHR-based upload so we can track progress % */
-function uploadWithProgress(url, formData, onProgress){
-  return new Promise((resolve, reject)=>{
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.upload.addEventListener('progress', e=>{
-      if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100));
-    });
-    xhr.addEventListener('load', ()=>{
-      if(xhr.status >= 200 && xhr.status < 300) resolve(JSON.parse(xhr.responseText));
-      else reject(new Error(`HTTP ${xhr.status}: ${xhr.responseText}`));
-    });
-    xhr.addEventListener('error', ()=>reject(new Error('Network error')));
-    xhr.send(formData);
+function uploadWithProgress(url,fd,onP){
+  return new Promise((res,rej)=>{
+    const xhr=new XMLHttpRequest();xhr.open('POST',url);
+    xhr.upload.addEventListener('progress',e=>{if(e.lengthComputable)onP(Math.round(e.loaded/e.total*100));});
+    xhr.addEventListener('load',()=>{if(xhr.status>=200&&xhr.status<300)res(JSON.parse(xhr.responseText));else rej(new Error(`HTTP ${xhr.status}`));});
+    xhr.addEventListener('error',()=>rej(new Error('Network error')));
+    xhr.send(fd);
   });
 }
-
-/* ── LOAD & RENDER VIDEO LIST ── */
 async function loadVideoTestis(){
-  try{
-    const r = await fetch(API+'/video-testimonials/all');
-    allVT = await r.json();
-    drawVTDesk(allVT);
-    drawVTMob(allVT);
-  }catch(e){
-    const b = document.getElementById('vt-body-desk');
-    if(b) b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load video testimonials</div></td></tr>';
-  }
+  try{const r=await fetch(API+'/video-testimonials/all');allVT=await r.json();drawVTDesk(allVT);drawVTMob(allVT);}
+  catch(e){const b=document.getElementById('vt-body-desk');if(b)b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⚠️</div>Could not load</div></td></tr>';}
 }
-
 function drawVTDesk(rows){
-  const b = document.getElementById('vt-body-desk');
-  if(!rows.length){
-    b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">▶</div>No video testimonials yet</div></td></tr>';
-    return;
-  }
-  b.innerHTML = rows.map(v=>{
-    const thumb = v.thumbnailUrl || '';
-    const typeBadge = v.videoType === 'UPLOAD'
-      ? '<span class="badge badge-web">⬆ Uploaded</span>'
-      : '<span class="badge badge-mobile">▶ YouTube</span>';
-    const statusBadge = v.active
-      ? '<span class="badge badge-completed">● Live</span>'
-      : '<span class="badge badge-contacted">● Hidden</span>';
+  const b=document.getElementById('vt-body-desk');
+  if(!rows.length){b.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">▶</div>No video testimonials yet</div></td></tr>';return;}
+  b.innerHTML=rows.map(v=>{
+    const thumb=v.thumbnailUrl||'';
+    const typeBadge=v.videoType==='UPLOAD'?'<span class="badge badge-web">⬆ Uploaded</span>':'<span class="badge badge-mobile">▶ YouTube</span>';
+    const statusBadge=v.active?'<span class="badge badge-completed">● Live</span>':'<span class="badge badge-contacted">● Hidden</span>';
     return `<tr>
-      <td style="width:80px">
-        ${thumb
-          ? `<img src="${thumb}" style="width:64px;height:44px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08)"/>`
-          : `<div style="width:64px;height:44px;background:rgba(255,255,255,.05);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">▶</div>`}
-      </td>
-      <td>
-        <strong style="display:block">${v.clientName}</strong>
-        <span style="font-size:11px;color:var(--gray)">${v.clientRole||''}</span>
-      </td>
+      <td style="width:80px">${thumb?`<img src="${thumb}" style="width:64px;height:44px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08)"/>`:`<div style="width:64px;height:44px;background:rgba(255,255,255,.05);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">▶</div>`}</td>
+      <td><strong style="display:block">${v.clientName}</strong><span style="font-size:11px;color:var(--gray)">${v.clientRole||''}</span></td>
       <td>${typeBadge}</td>
       <td style="color:#ffd700;font-size:15px">${'★'.repeat(v.rating||5)}</td>
       <td>${statusBadge}</td>
-      <td>
-        <div style="display:flex;gap:6px">
-          <button class="action-btn" onclick="toggleVT(${v.id})">${v.active?'Hide':'Show'}</button>
-          <button class="action-btn danger" onclick="delVT(${v.id})">Delete</button>
-        </div>
-      </td>
+      <td><div style="display:flex;gap:6px"><button class="action-btn" onclick="toggleVT(${v.id})">${v.active?'Hide':'Show'}</button><button class="action-btn danger" onclick="delVT(${v.id})">Delete</button></div></td>
     </tr>`;
   }).join('');
 }
-
 function drawVTMob(rows){
-  const b = document.getElementById('vt-body-mob');
-  if(!rows.length){
-    b.innerHTML='<div class="empty-state"><div class="empty-icon">▶</div>No video testimonials yet</div>';
-    return;
-  }
-  b.innerHTML = rows.map(v=>{
-    const thumb = v.thumbnailUrl || '';
-    const typeLabel = v.videoType==='UPLOAD' ? '⬆ Uploaded' : '▶ YouTube';
+  const b=document.getElementById('vt-body-mob');
+  if(!rows.length){b.innerHTML='<div class="empty-state"><div class="empty-icon">▶</div>No video testimonials yet</div>';return;}
+  b.innerHTML=rows.map(v=>{
+    const thumb=v.thumbnailUrl||'';const tl=v.videoType==='UPLOAD'?'⬆ Uploaded':'▶ YouTube';
     return `<div class="mob-card">
       <div class="mob-card-head">
         <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
-          ${thumb
-            ? `<img src="${thumb}" style="width:60px;height:42px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`
-            : `<div style="width:60px;height:42px;background:rgba(255,255,255,.05);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">▶</div>`}
-          <div style="min-width:0">
-            <div class="mob-card-name">${v.clientName}</div>
-            <div class="mob-card-sub">${v.clientRole||'—'} · ${typeLabel}</div>
-          </div>
+          ${thumb?`<img src="${thumb}" style="width:60px;height:42px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.08);flex-shrink:0"/>`:`<div style="width:60px;height:42px;background:rgba(255,255,255,.05);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">▶</div>`}
+          <div style="min-width:0"><div class="mob-card-name">${v.clientName}</div><div class="mob-card-sub">${v.clientRole||'—'} · ${tl}</div></div>
         </div>
-        ${v.active
-          ? '<span class="badge badge-completed" style="flex-shrink:0">Live</span>'
-          : '<span class="badge badge-contacted" style="flex-shrink:0">Hidden</span>'}
+        ${v.active?'<span class="badge badge-completed" style="flex-shrink:0">Live</span>':'<span class="badge badge-contacted" style="flex-shrink:0">Hidden</span>'}
       </div>
       <div class="mob-card-grid" style="margin-bottom:12px">
         <div class="mob-field"><div class="mob-field-lbl">Rating</div><div class="mob-field-val" style="color:#ffd700">${'★'.repeat(v.rating||5)}</div></div>
-        <div class="mob-field"><div class="mob-field-lbl">Type</div><div class="mob-field-val">${typeLabel}</div></div>
+        <div class="mob-field"><div class="mob-field-lbl">Type</div><div class="mob-field-val">${tl}</div></div>
       </div>
       <div class="mob-card-actions">
         <button class="action-btn" style="flex:1" onclick="toggleVT(${v.id})">${v.active?'Hide from site':'Show on site'}</button>
@@ -1063,25 +1171,14 @@ function drawVTMob(rows){
     </div>`;
   }).join('');
 }
-
-async function toggleVT(id){
-  try{
-    await fetch(API+'/video-testimonials/'+id+'/toggle',{method:'PATCH'});
-    toast('Visibility updated ✓');
-    loadVideoTestis();
-  }catch(e){ toast('Failed to update',false); }
-}
-
+async function toggleVT(id){try{await fetch(API+'/video-testimonials/'+id+'/toggle',{method:'PATCH'});toast('Visibility updated ✓');loadVideoTestis();}catch(e){toast('Failed',false);}}
 async function delVT(id){
-  if(!confirm('Delete this video? This cannot be undone.')) return;
-  try{
-    await fetch(API+'/video-testimonials/'+id,{method:'DELETE'});
-    toast('Video deleted');
-    loadVideoTestis();
-  }catch(e){ toast('Failed to delete',false); }
+  if(!confirm('Delete this video? Cannot be undone.'))return;
+  try{await fetch(API+'/video-testimonials/'+id,{method:'DELETE'});toast('Video deleted');loadVideoTestis();}
+  catch(e){toast('Failed to delete',false);}
 }
 
-/* ── HELPERS ── */
+// ── HELPERS ───────────────────────────────────────────────────
 function stbadge(s){return s==='CONTACTED'?'badge-contacted':s==='COMPLETED'?'badge-completed':'badge-new'}
 function sbadge(s){if(!s)return'';const l=s.toLowerCase();return l.includes('mobile')?'badge-mobile':l.includes('cloud')?'badge-cloud':'badge-web'}
 function fmt(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}
